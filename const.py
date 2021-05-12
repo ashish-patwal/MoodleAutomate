@@ -4,6 +4,8 @@ MAINURL = "http://45.116.207.79/moodle/my/"
 
 CLNDRURL = 'http://45.116.207.79/moodle/calendar/view.php?view=upcoming'
 
+MARKATTENDANCEURL = 'http://45.116.207.79/moodle/mod/attendance/attendance.php'
+
 SUBURL_REG = '^http://45\.116\.207\.79/moodle/course/view\.php\?id=[0-9]*$'
 SUBURL = 'http://45.116.207.79/moodle/course/view.php?id='
 
