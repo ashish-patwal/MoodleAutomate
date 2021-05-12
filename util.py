@@ -3,12 +3,18 @@ from context import RequestURL
 import requests
 import re
 
-from const import MAINURL, CLNDRURL, SUBURL, SUBURL_REG, VIDEOURL, VIDEOURL_REG
+from const import MAINURL, CLNDRURL, SUBURL, SUBURL_REG, VIDEOURL_REG, RESOURCEURL_REG, ATTENDANCEURL_REG
+
+def generator(soup):
+        for data in ( resp.get_text() for resp in soup.find('div', {'class': 'calendarwrapper'}).find_all('a')):
+                print(data) 
 
 def calendarwrapper(session, headers):
         with RequestURL(CLNDRURL, session, headers) as soup:
-                for data in ( event.get_text().strip() for event in soup.find('div', {'class': 'calendarwrapper'}).find_all('a')):
-                            print(data)
+                generator(soup)
+
+                #for data in ( event.get_text().strip() for event in soup.find('div', {'class': 'calendarwrapper'}).find_all('a')):
+                #            print(data)
         #events = soup.find('div', {'class': 'Attendance'}).find_all('a') 
         #print(names)
         #print(events)
@@ -34,10 +40,11 @@ def submitwrapper(session, headers, targetURL):
 
 def subjectmaterial(session, headers, subId):
         with RequestURL(f'{SUBURL}{subId}', session, headers) as soup:
-                links = soup.find_all('a', href=re.compile(VIDEOURL_REG)) 
+                links = soup.find_all('a', href=re.compile(VIDEOURL_REG + '|' + ATTENDANCEURL_REG + '|' + RESOURCEURL_REG)) 
 
                 for link in links:
-                        print(link.attrs['href'])
+                        print(' '.join(link.get_text().split(' ')[:-1]))
                 
                 print(len(links))
+
 
