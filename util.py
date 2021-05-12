@@ -1,4 +1,5 @@
 from tabulate import tabulate
+from urllib.parse import urlparse, parse_qs
 from context import RequestURL
 import requests
 import re
@@ -29,13 +30,25 @@ def subjectwrapper(session, headers):
                 print(tabulate([ [event.get_text(), event.attrs['href']] for event in soup.find('nav', {'class': 'list-group'}).find_all('a', href = re.compile(SUBURL_REG))], headers=['subject', 'link'], tablefmt='pretty'))
 
 
-def submitwrapper(session, headers, targetURL):
-        pass
+def submitAttendance(targetURL, session, headers):
+
+        payload = {
+                 'status': '1561',
+                 'submitbutton': 'Save+changes',
+                 '_qf__mod_attendance_student_attendance_form': '1',
+                 'mform_isexpanded_id_session': '1'}
+
+        with RequestURL(targetURL, session, headers) as soup:
+                target = soup.find('a', text='Submit attendance')['href']
+                #for k, v in parse_qs(urlparse(target).query).items():
+                #        payload[k] = ''.join(v)
+                with RequestURL(target, session, headers) as soup2:
+                        present = soup2.find('input', {'name': 'status', 'type': 'radio'}, text='Present')['value']
+                        print(present)
+                
         #html = session.get(targetURL, verify=False, headers=headers)
         #soup = BeautifulSoup(html.text, 'html5lib')
 
-        #target = soup.find('a', text='Submit attendance')
-        #print(target)
 
 
 def subjectmaterial(session, headers, subId):
