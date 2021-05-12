@@ -14,9 +14,9 @@ with requests.Session() as session:
     
     html2 = session.post(URL, verify=False, headers=headers, data=params) 
     headers.update(session.cookies.get_dict())
-    #calendarwrapper(session, headers) 
+    calendarwrapper(session, headers) 
     #print('-'*20)
-    #subjectwrapper(session, headers)
+    subjectwrapper(session, headers)
     #print('-'*20)
     #submitwrapper(session, headers, targetURL)
     subjectmaterial(session, headers ,'190')
