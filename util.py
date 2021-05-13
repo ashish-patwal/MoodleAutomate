@@ -1,4 +1,5 @@
 from tabulate import tabulate
+from bs4 import BeautifulSoup
 from urllib.parse import urlparse, parse_qs
 from context import RequestURL
 import re
@@ -8,7 +9,7 @@ from const import MAINURL, CLNDRURL, SUBURL, SUBURL_REG, VIDEOURL_REG, RESOURCEU
 
 
 def dateAndTime(soup):
-    return (data.select('div:nth-of-type(3)') for data in soup.find_all('div', {'class': 'description card-body'}))
+    return [BeautifulSoup(data.select('div:nth-of-type(3)'), 'html5lib').get_text() for data in soup.select('div:is(.description .card-body)')]
     #return (data.get_text().split()[0] for data in soup.find('div', {'class': 'calendarwrapper'}).find_all('div', class_=re.         compile('^row$')))
 
 
@@ -18,9 +19,12 @@ def Links(soup):
 
 def calendarWrapper(session, headers):
     with RequestURL(CLNDRURL, session, headers) as soup:
-        for data in dateAndTime(soup):
-            #if str(data).startswith('Today'):
-                print(str(data).get_text())
+        for link in Links(soup):
+            submitAttendance(link, session, headers)
+            #print(link)
+            #threading.Thread(target=submitAttendance, args=(link, session, headers)).start()
+            
+
 
 
         # for data in ( event.get_text().strip() for event in soup.find('div', {'class': 'calendarwrapper'}).find_all('a')):
@@ -51,16 +55,21 @@ def submitAttendance(targetURL, session, headers):
     with RequestURL(targetURL, session, headers) as soup:
         try:
             target = soup.find('a', text='Submit attendance')['href']
-        except:
-            return
-        for k, v in parse_qs(urlparse(target).query).items():
-                payload[k] = ''.join(v)
-        with RequestURL(target, session, headers) as soup2:
-            presentValue = soup2.find('input', {'name': 'status', 'type': 'radio'}, text='Present')['value']
-            payload.setdefault('status', presentValue)
-            
-            r = session.post(MARKATTENDANCEURL, verify=False, headers=headers, data=payload)
-            print(r.status_code)
+        except TypeError:
+            print('NO submit button found')
+            print('-'*20)
+        else:
+            for k, v in parse_qs(urlparse(target).query).items():
+                    payload[k] = ''.join(v)
+            with RequestURL(target, session, headers) as soup2:
+                presentValue = soup2.find('input', {'name': 'status', 'type': 'radio'})['value']
+                #statusValue = presentValue.find_parent('input',{'name': 'status', 'type': 'radio'}).attrs['value']
+                payload.setdefault('status', presentValue)
+                print(payload)
+                
+                r = session.post(MARKATTENDANCEURL, verify=False, headers=headers, data=payload)
+                print('Status code : ', r.status_code)
+                print('-'*20)
                 
 
     # html = session.get(targetURL, verify=False, headers=headers)
