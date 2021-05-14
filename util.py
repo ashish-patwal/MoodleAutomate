@@ -1,10 +1,11 @@
 from tabulate import tabulate
 from urllib.parse import urlparse, parse_qs
 from requests import codes
-import random
+import subprocess
 import re
 import threading
 
+from operations import play_video
 from context import RequestURL, PostToURL
 from const import payload, MAINURL, CLNDRURL, SUBURL, SUBURL_REG, VIDEOURL_REG, RESOURCEURL_REG, ATTENDANCEURL_REG, MARKATTENDANCEURL
 
@@ -23,8 +24,6 @@ def submitAttendance(session, headers):
     print('-'*20)
     with RequestURL(CLNDRURL, session, headers) as soup:
         for link in Links(soup):
-            # submitAttendance(link, session, headers)
-            # print(link)
             threading.Thread(target=markAttendance, args=(
                 link, session, headers)).start()
 
@@ -40,11 +39,6 @@ def calenderEvents(session, headers):
 
 
 def markAttendance(targetURL, session, headers):
-
-    # payload = {
-    #     'submitbutton': 'Save+changes',
-    #     '_qf__mod_attendance_student_attendance_form': '1',
-    #     'mform_isexpanded_id_session': '1'}
 
     payload_instance = dict(payload)
 
@@ -85,7 +79,7 @@ def listSubjects(session, headers):
         choice = input('Enter choice : ')
         try:
             if (choice.isdigit()):
-                subjectmaterial(session, headers, subList[int(choice)-1][2])
+                subjectMaterial(session, headers, subList[int(choice)-1][2])
             else:
                 print('Wrong Input')
 
@@ -93,13 +87,32 @@ def listSubjects(session, headers):
             print('Wrong Input')
 
 
-def subjectmaterial(session, headers, subId):
+def titleStringSolver(title):
+    return ' '.join(title.split()[:-1]) if len(title.split()) > 1 else title.strip()
+
+
+def subjectMaterial(session, headers, subId):
     with RequestURL(f'{SUBURL}{subId}', session, headers) as soup:
         links = soup.find_all('a', href=re.compile(
             VIDEOURL_REG + '|' + ATTENDANCEURL_REG + '|' + RESOURCEURL_REG))
 
-        material = ([counter, ' '.join(link.get_text().split(' ')[:-1]), link.attrs['href']]
-                    for counter, link in enumerate(links, 1))
+        material = [[counter, titleStringSolver(link.get_text()), link.attrs['href']]
+                    for counter, link in enumerate(links, 1)]
 
-        print(tabulate(material, headers=[
-              'S.No', 'Title', 'URL'], tablefmt='pretty'))
+        printMaterial = [[col[0], col[1]] for col in material]
+
+        print(tabulate(printMaterial, headers=[
+              'S.No', 'Title'], tablefmt='pretty'))
+
+        choice = input('Enter choice : ')
+        try:
+            print('ok')
+            if (choice.isdigit()):
+                videourl = material[int(choice)-1][2]
+                play_video('mpv', videourl, session, headers)
+
+            else:
+                print('Wrong Input')
+
+        except:
+            print('Error in util')
