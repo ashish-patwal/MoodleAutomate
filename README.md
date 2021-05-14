@@ -8,6 +8,11 @@ Prerequisite :
 
 Update username and password in const.py
 
+Python library needed :
+tabulate 
+bs4
+html5lib
+
 BASIC USAGE :
 
 python gehu.py -h ---> Displays help options
