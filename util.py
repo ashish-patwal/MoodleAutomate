@@ -91,18 +91,41 @@ def titleStringSolver(title):
     return ' '.join(title.split()[:-1]) if len(title.split()) > 1 else title.strip()
 
 
+def typeParser(links, material):
+
+    searcher = re.compile('(' + VIDEOURL_REG + ')' + '|' +
+                          '(' + ATTENDANCEURL_REG + ')' + '|' + '(' + RESOURCEURL_REG + ')')
+
+    displayList = []
+
+    for link, col in zip(links, material):
+        typ = searcher.search(link)
+        video, attendance, resource = typ.groups()
+
+        if video:
+            displayList.append([col[0], col[1], 'video'])
+        elif attendance:
+            displayList.append([col[0], col[1], 'attendance'])
+        else:
+            displayList.append([col[0], col[1], 'resource'])
+
+    return displayList
+
+
 def subjectMaterial(session, headers, subId):
     with RequestURL(f'{SUBURL}{subId}', session, headers) as soup:
         links = soup.find_all('a', href=re.compile(
             VIDEOURL_REG + '|' + ATTENDANCEURL_REG + '|' + RESOURCEURL_REG))
 
+        linkss = [link.attrs['href'] for link in links]
+
         material = [[counter, titleStringSolver(link.get_text()), link.attrs['href']]
                     for counter, link in enumerate(links, 1)]
 
-        printMaterial = [[col[0], col[1]] for col in material]
+        printMaterial = typeParser(linkss, material)
 
         print(tabulate(printMaterial, headers=[
-              'S.No', 'Title'], tablefmt='pretty'))
+              'S.No', 'Title', 'type'], tablefmt='pretty'))
 
         choice = input('Enter choice : ')
         try:
