@@ -1,11 +1,12 @@
 from tabulate import tabulate
 from urllib.parse import urlparse, parse_qs
-from context import RequestURL
 from requests import codes
+import random
 import re
 import threading
 
-from const import MAINURL, CLNDRURL, SUBURL, SUBURL_REG, VIDEOURL_REG, RESOURCEURL_REG, ATTENDANCEURL_REG, MARKATTENDANCEURL
+from context import RequestURL, PostToURL
+from const import payload, MAINURL, CLNDRURL, SUBURL, SUBURL_REG, VIDEOURL_REG, RESOURCEURL_REG, ATTENDANCEURL_REG, MARKATTENDANCEURL
 
 
 def dateAndTime(soup):
@@ -40,10 +41,12 @@ def calenderEvents(session, headers):
 
 def markAttendance(targetURL, session, headers):
 
-    payload = {
-        'submitbutton': 'Save+changes',
-        '_qf__mod_attendance_student_attendance_form': '1',
-        'mform_isexpanded_id_session': '1'}
+    # payload = {
+    #     'submitbutton': 'Save+changes',
+    #     '_qf__mod_attendance_student_attendance_form': '1',
+    #     'mform_isexpanded_id_session': '1'}
+
+    payload_instance = dict(payload)
 
     with RequestURL(targetURL, session, headers) as soup:
         print(soup.title.string)
@@ -54,19 +57,20 @@ def markAttendance(targetURL, session, headers):
             print('-'*20)
         else:
             for k, v in parse_qs(urlparse(target).query).items():
-                payload[k] = ''.join(v)
+                payload_instance[k] = ''.join(v)
             with RequestURL(target, session, headers) as soup2:
                 presentValue = soup2.find(
                     'input', {'name': 'status', 'type': 'radio'})['value']
                 # statusValue = presentValue.find_parent('input',{'name': 'status', 'type': 'radio'}).attrs['value']
-                payload.setdefault('status', presentValue)
+                payload_instance.setdefault('status', presentValue)
 
-                r = session.post(MARKATTENDANCEURL, verify=False,
-                                 headers=headers, data=payload)
-                if r.status_code == codes['ok']:
+                responce = PostToURL(
+                    MARKATTENDANCEURL, session, headers, payload_instance)
+
+                if responce.status_code == codes['ok']:
                     print('Submitted Attendance successfully')
                 else:
-                    print("Error happend : " + r.status_code)
+                    print("Error happend : " + responce.status_code)
                 print('-'*20)
 
 

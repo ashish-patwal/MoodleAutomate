@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 
+
 class RequestURL:
 
     def __init__(self, URL, session, headers) -> None:
@@ -8,7 +9,8 @@ class RequestURL:
         self.headers = headers
 
     def __enter__(self) -> 'soup':
-        self.html = self.session.get(self.URL, verify=False, headers=self.headers)
+        self.html = self.session.get(
+            self.URL, verify=False, headers=self.headers)
         self.soup = BeautifulSoup(self.html.text, 'html5lib')
 
         return self.soup
@@ -17,4 +19,19 @@ class RequestURL:
         pass
 
 
+class PostToURL:
 
+    def __init__(self, URL, session, headers, payload) -> None:
+        self.URL = URL
+        self.session = session
+        self.headers = headers
+        self.payload = payload
+
+    def __enter__(self) -> 'resp':
+        self.responce = self.session.post(
+            self.URL, verify=False, headers=self.headers, data=self.payload)
+
+        return self.responce
+
+    def __exit__(self, exec_type, exec_value, exec_trace) -> None:
+        pass
