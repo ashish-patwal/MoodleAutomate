@@ -1,8 +1,9 @@
 from bs4 import BeautifulSoup
 import requests
-
+import sys
+import argparse
 from const import URL, params, headers
-from util import calendarWrapper, subjectwrapper, submitAttendance, subjectmaterial
+from util import calenderEvents, listSubjects, submitAttendance, subjectmaterial
 
 # payload = {
 #        'sessid': '2542',
@@ -13,22 +14,44 @@ from util import calendarWrapper, subjectwrapper, submitAttendance, subjectmater
 #        'submitbutton': 'Save changes'}
 
 
-with requests.Session() as session:
-    html = session.get(URL, verify=False, headers=headers)
-    soup = BeautifulSoup(html.content, 'html5lib')
-    params['logintoken'] = soup.find('input', {'name': 'logintoken'})['value']
+parser = argparse.ArgumentParser()
+group = parser.add_mutually_exclusive_group()
 
-    html2 = session.post(URL, verify=False, headers=headers, data=params)
-    headers.update(session.cookies.get_dict())
-    calendarWrapper(session, headers)
-    # print('-'*20)
-    # subjectwrapper(session, headers)
-    # print('-'*20)
-    # submitAttendance(
-    #    'http://45.116.207.79/moodle/mod/attendance/view.php?id=5662', session, headers)
+group.add_argument('--events', '-e', dest='show_events',
+                   action='store_true', help='displays the upcoming events')
+group.add_argument('--attendance', '-a', dest='mark_attendance',
+                   action='store_true', help='marks attendance')
+group.add_argument('--subjects', '-s', dest='list_subjects',
+                   action='store_true', help='displays subject')
 
-    # subjectmaterial(session, headers ,'190')
+args = parser.parse_args()
 
-    # r = session.post('http://45.116.207.79/moodle/mod/attendance/\
-    # attendance.php', verify=False , headers=headers, data=payload)
-    # print(r.status_code)
+if len(sys.argv) == 1:
+    print('Please provide arguments')
+
+else:
+    with requests.Session() as session:
+        html = session.get(URL, verify=False, headers=headers)
+        soup = BeautifulSoup(html.content, 'html5lib')
+        params['logintoken'] = soup.find(
+            'input', {'name': 'logintoken'})['value']
+
+        print()
+        print('Authenticating with Moodle')
+        print('-'*20)
+        html2 = session.post(URL, verify=False, headers=headers, data=params)
+        if html2.url == URL:
+            print('Wrong Credentials')
+        else:
+            headers.update(session.cookies.get_dict())
+            print('updated cookies for moodle session')
+            print('-'*20)
+
+            if args.list_subjects:
+                listSubjects(session, headers)
+
+            elif args.mark_attendance:
+                submitAttendance(session, headers)
+
+            elif args.show_events:
+                calenderEvents(session, headers)
