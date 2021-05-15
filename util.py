@@ -43,10 +43,11 @@ def markAttendance(targetURL, session, headers):
     payload_instance = dict(payload)
 
     with RequestURL(targetURL, session, headers) as soup:
-        print(soup.title.string)
+        title = soup.title.string
         try:
             target = soup.find('a', text='Submit attendance')['href']
         except TypeError:
+            print(title)
             print('NO Submission Link')
             print('-'*20)
         else:
@@ -58,14 +59,15 @@ def markAttendance(targetURL, session, headers):
                 # statusValue = presentValue.find_parent('input',{'name': 'status', 'type': 'radio'}).attrs['value']
                 payload_instance.setdefault('status', presentValue)
 
-                responce = PostToURL(
-                    MARKATTENDANCEURL, session, headers, payload_instance)
+                with PostToURL(MARKATTENDANCEURL, session, headers, payload_instance) as responce:
+                    
+                    print(title)
 
-                if responce.status_code == codes['ok']:
-                    print('Submitted Attendance successfully')
-                else:
-                    print("Error happend : " + responce.status_code)
-                print('-'*20)
+                    if responce.status_code == codes['ok']:
+                        print('Submitted Attendance successfully')
+                    else:
+                        print("Error happend : " + responce.status_code)
+                    print('-'*20)
 
 
 def listSubjects(session, headers):
