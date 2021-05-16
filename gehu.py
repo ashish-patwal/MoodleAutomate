@@ -1,10 +1,20 @@
 import requests
+import json
 import sys
 
 from context import RequestURL, PostToURL
 from parser import cmd_parser
-from const import URL, params, headers, motive
-from util import calenderEvents, listSubjects, submitAttendance
+from const import URL, MAINURL, params, headers, motive
+from util import calenderEvents, listSubjects, submitAttendance, subjectList
+
+API = 'http://45.116.207.79/moodle/lib/ajax/service.php?sesskey=jUndHEbdWs&info=core_fetch_notifications'
+
+api_params = {'info': 'core_fetch_notifications'}
+
+api_payload = {
+        "index": 0,
+        "methodname": "core_fetch_notifications",
+        "args": {"contextid":10095}}
 
 # payload = {
 #        'sessid': '2542',
@@ -37,11 +47,20 @@ else:
                 print('updated cookies for moodle session')
                 print('-'*20)
 
+                #with RequestURL(MAINURL, session, headers) as soup:
+                #    api_params['sesskey'] = soup.find('input', {'name': 'sesskey'})['value']
+                #    args = soup.find('head > script')
+                #    print(args)
+                    #api_params['args'] = {'contextid': args}
+
+                #responce = session.post(API, verify=False ,headers=headers, params=api_params, json=api_payload)
+                #print(responce.json())
+
                 if args.show_motive:
                     print(motive)
 
                 elif args.list_subjects:
-                    listSubjects(session, headers)
+                    subjectList(session, headers)
 
                 elif args.mark_attendance:
                     submitAttendance(session, headers)

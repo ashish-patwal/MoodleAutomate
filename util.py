@@ -36,6 +36,10 @@ def calenderEvents(session, headers):
             print(event)
             if(counter % 3 == 0):
                 print('-'*20)
+        else:
+             print('No events as of now')
+             print('-'*20)
+
 
 
 def markAttendance(targetURL, session, headers):
@@ -68,6 +72,17 @@ def markAttendance(targetURL, session, headers):
                     else:
                         print("Error happend : " + responce.status_code)
                     print('-'*20)
+
+
+def subjectList(session, headers):
+    with RequestURL(MAINURL, session, headers) as soup:
+
+        subList = [[counter, event.get_text(), event.attrs['data-key']] for counter, event in enumerate(soup.find('ul',
+            class_=re.compile('list-group$')).find_all('a', href=re.compile(SUBURL_REG)), 1)]
+
+        print(tabulate(subList, headers=[
+              'S.No', 'Subject', 'ID'], tablefmt='pretty'))
+
 
 
 def listSubjects(session, headers):
