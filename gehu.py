@@ -60,7 +60,7 @@ else:
                     print(motive)
 
                 elif args.list_subjects:
-                    subjectList(session, headers)
+                    listSubjects(session, headers)
 
                 elif args.mark_attendance:
                     submitAttendance(session, headers)

@@ -5,7 +5,7 @@ import subprocess
 import re
 import threading
 
-from operations import play_video
+from operations import play_video, download_resource
 from context import RequestURL, PostToURL
 from const import payload, MAINURL, CLNDRURL, SUBURL, SUBURL_REG, VIDEOURL_REG, RESOURCEURL_REG, ATTENDANCEURL_REG, MARKATTENDANCEURL
 
@@ -148,8 +148,14 @@ def subjectMaterial(session, headers, subId):
         try:
             print('ok')
             if (choice.isdigit()):
-                videourl = material[int(choice)-1][2]
-                play_video('mpv', videourl, session, headers)
+                baseurl = material[int(choice)-1][2]
+                if (printMaterial[int(choice)-1][2] == 'resource'):
+                    print('resource')
+                    download_resource(baseurl, session, headers)
+                elif (printMaterial[int(choice)-1][2] == 'video'):
+                    play_video('vlc', baseurl, session, headers)
+                else :
+                    print('its attendance')
 
             else:
                 print('Wrong Input')
