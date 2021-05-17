@@ -2,11 +2,13 @@ from tabulate import tabulate
 from urllib.parse import urlparse, parse_qs
 from requests import codes
 import subprocess
+import json
 import re
 import threading
 
 from operations import play_video, download_resource
 from context import RequestURL, PostToURL
+from const import COURSES_API, courses_api_params, courses_api_payload
 from const import payload, MAINURL, CLNDRURL, SUBURL, SUBURL_REG, VIDEOURL_REG, RESOURCEURL_REG, ATTENDANCEURL_REG, MARKATTENDANCEURL
 
 
@@ -84,24 +86,24 @@ def subjectList(session, headers):
               'S.No', 'Subject', 'ID'], tablefmt='pretty'))
 
 
+def listSubjects(session, headers, sesskey):
+    api_payload = json.loads(courses_api_payload)
+    courses_api_params['sesskey'] = sesskey
+    responce = session.post(COURSES_API, verify=False ,headers=headers, params=courses_api_params, data=json.dumps(api_payload))
 
-def listSubjects(session, headers):
-    with RequestURL(MAINURL, session, headers) as soup:
+    tab_data = [[counter, row['fullnamedisplay'], row['shortname'], row['id'], row['progress']] for counter, row in enumerate(responce.json()[0]['data']['courses'], 1)]
+    print(tabulate(tab_data, headers=['S.No', 'Full Name', 'Short Name', 'ID', 'progress'], tablefmt='pretty'))
 
-        subList = [[counter, event.get_text(), event.attrs['data-key']] for counter, event in enumerate(soup.find('nav', {
-            'class': 'list-group'}).find_all('a', href=re.compile(SUBURL_REG)), 1)]
-
-        print(tabulate(subList, headers=[
-              'S.No', 'Subject', 'ID'], tablefmt='pretty'))
-        choice = input('Enter choice : ')
-        try:
-            if (choice.isdigit()):
-                subjectMaterial(session, headers, subList[int(choice)-1][2])
-            else:
-                print('Wrong Input')
-
-        except IndexError:
+    choice = input('Enter choice : ')
+        
+    try:
+        if (choice.isdigit()):
+            subjectMaterial(session, headers, tab_data[int(choice)-1][3])
+        else:
             print('Wrong Input')
+
+    except IndexError:
+        print('Wrong Input')
 
 
 def titleStringSolver(title):

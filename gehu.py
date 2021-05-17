@@ -7,15 +7,6 @@ from parser import cmd_parser
 from const import URL, MAINURL, params, headers, motive
 from util import calenderEvents, listSubjects, submitAttendance, subjectList
 
-API = 'http://45.116.207.79/moodle/lib/ajax/service.php?sesskey=jUndHEbdWs&info=core_fetch_notifications'
-
-api_params = {'info': 'core_fetch_notifications'}
-
-api_payload = {
-        "index": 0,
-        "methodname": "core_fetch_notifications",
-        "args": {"contextid":10095}}
-
 # payload = {
 #        'sessid': '2542',
 #        'sesskey': 'LAKRb1WMNT',
@@ -47,20 +38,24 @@ else:
                 print('updated cookies for moodle session')
                 print('-'*20)
 
-                #with RequestURL(MAINURL, session, headers) as soup:
+                with RequestURL(MAINURL, session, headers) as soup:
+                    sesskey = soup.find('input', {'name': 'sesskey'})['value']
                 #    api_params['sesskey'] = soup.find('input', {'name': 'sesskey'})['value']
-                #    args = soup.find('head > script')
-                #    print(args)
-                    #api_params['args'] = {'contextid': args}
 
-                #responce = session.post(API, verify=False ,headers=headers, params=api_params, json=api_payload)
-                #print(responce.json())
+                #print(api_params)
+
+                #responce = session.post(API, verify=False ,headers=headers, params=api_params, data=json.dumps(api_payload))
+                #print(responce.status_code)
+                #with open('result.json', 'w') as file:
+                #    json.dump(responce.json(), file, indent=4, sort_keys=True)
+                #format_str = json.dumps(responce.json(), indent=4)
+                #print(format_str)
 
                 if args.show_motive:
                     print(motive)
 
                 elif args.list_subjects:
-                    listSubjects(session, headers)
+                    listSubjects(session, headers, sesskey)
 
                 elif args.mark_attendance:
                     submitAttendance(session, headers)

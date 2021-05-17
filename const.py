@@ -22,12 +22,19 @@ headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'}
 
 params = {'logintoken': 'Not updated',
-          'username': '190111321', 'password': 'Roorkee@123'}
+          'username': 'Your_username', 'password': 'Your_password'}
 
 payload = {
     'submitbutton': 'Save+changes',
     '_qf__mod_attendance_student_attendance_form': '1',
     'mform_isexpanded_id_session': '1'}
+
+COURSES_API = 'http://45.116.207.79/moodle/lib/ajax/service.php?sesskey=jUndHEbdWs&info=core_course_get_enrolled_courses_by_timeline_classification'
+
+courses_api_params = {'info': 'core_course_get_enrolled_courses_by_timeline_classification'}
+
+courses_api_payload = '[{"index":0,"methodname":"core_course_get_enrolled_courses_by_timeline_classification","args":{"offset":0,"limit":0,"classification":"all","sort":"fullname","customfieldname":"","customfieldvalue":""}}]'
+
 
 motive = '''
 I wanna be the very best
