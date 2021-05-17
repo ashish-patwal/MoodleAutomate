@@ -21,15 +21,14 @@ ATTENDANCEURL = 'http://45.116.207.79/moodle/mod/attendance/view.php?id='
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'}
 
-params = {'logintoken': 'Not updated',
-          'username': 'Your_username', 'password': 'Your_password'}
+params = {'logintoken': 'Not updated', 'username': 'Your_username', 'password': 'Your_password'}
 
 payload = {
     'submitbutton': 'Save+changes',
     '_qf__mod_attendance_student_attendance_form': '1',
     'mform_isexpanded_id_session': '1'}
 
-COURSES_API = 'http://45.116.207.79/moodle/lib/ajax/service.php?sesskey=jUndHEbdWs&info=core_course_get_enrolled_courses_by_timeline_classification'
+API = 'http://45.116.207.79/moodle/lib/ajax/service.php'
 
 courses_api_params = {'info': 'core_course_get_enrolled_courses_by_timeline_classification'}
 
