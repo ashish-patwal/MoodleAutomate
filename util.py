@@ -8,7 +8,7 @@ import threading
 
 from operations import play_video, download_resource
 from context import RequestURL, PostToURL
-from const import COURSES_API, courses_api_params, courses_api_payload
+from const import API, courses_api_params, courses_api_payload
 from const import payload, MAINURL, CLNDRURL, SUBURL, SUBURL_REG, VIDEOURL_REG, RESOURCEURL_REG, ATTENDANCEURL_REG, MARKATTENDANCEURL
 
 
@@ -89,8 +89,9 @@ def subjectList(session, headers):
 def listSubjects(session, headers, sesskey):
     api_payload = json.loads(courses_api_payload)
     courses_api_params['sesskey'] = sesskey
-    responce = session.post(COURSES_API, verify=False ,headers=headers, params=courses_api_params, data=json.dumps(api_payload))
+    responce = session.post(API, verify=False ,headers=headers, params=courses_api_params, data=json.dumps(api_payload))
 
+    print()
     tab_data = [[counter, row['fullnamedisplay'], row['shortname'], row['id'], row['progress']] for counter, row in enumerate(responce.json()[0]['data']['courses'], 1)]
     print(tabulate(tab_data, headers=['S.No', 'Full Name', 'Short Name', 'ID', 'progress'], tablefmt='pretty'))
 

@@ -1,6 +1,5 @@
 from subprocess import Popen, PIPE
 from urllib.parse import urlparse
-from secret.apikey import key
 import urllib3
 import os
 
