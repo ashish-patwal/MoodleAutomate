@@ -1,11 +1,10 @@
 from tabulate import tabulate
 from urllib.parse import urlparse, parse_qs
 from requests import codes
-import subprocess
 import json
 import re
 import threading
-
+from timestamp import timestamp
 from operations import play_video, download_resource
 from context import RequestURL, PostToURL
 from const import API, courses_api_params, courses_api_payload
@@ -13,7 +12,6 @@ from const import payload, MAINURL, CLNDRURL, SUBURL, SUBURL_REG, VIDEOURL_REG, 
 
 
 def dateAndTime(soup):
-    # return [BeautifulSoup(data.select('div:nth-of-type(3)'), 'html5lib').get_text() for data in soup.select('div:is(.description .card-body)')]
     return (''.join(data.get_text().split()) for data in soup.find('div', {'class': 'calendarwrapper'}).find_all('div', class_=re.         compile('^row$')))
 
 
@@ -34,14 +32,15 @@ def calenderEvents(session, headers):
     print('Showing upcoming events')
     print('-'*20)
     with RequestURL(CLNDRURL, session, headers) as soup:
-        for counter, event in enumerate(dateAndTime(soup), 1):
-            print(event)
-            if(counter % 3 == 0):
-                print('-'*20)
-        else:
-             print('No events as of now')
-             print('-'*20)
 
+        try:
+            for counter, event in enumerate(dateAndTime(soup), 1):
+                print(event)
+                if(counter % 3 == 0):
+                    print('-'*20)
+        except:
+            print('No events as of now')
+            print('-'*20)
 
 
 def markAttendance(targetURL, session, headers):
@@ -62,11 +61,11 @@ def markAttendance(targetURL, session, headers):
             with RequestURL(target, session, headers) as soup2:
                 presentValue = soup2.find(
                     'input', {'name': 'status', 'type': 'radio'})['value']
-                # statusValue = presentValue.find_parent('input',{'name': 'status', 'type': 'radio'}).attrs['value']
+
                 payload_instance.setdefault('status', presentValue)
 
                 with PostToURL(MARKATTENDANCEURL, session, headers, payload_instance) as responce:
-                    
+
                     print(title)
 
                     if responce.status_code == codes['ok']:
@@ -80,23 +79,25 @@ def subjectList(session, headers):
     with RequestURL(MAINURL, session, headers) as soup:
 
         subList = [[counter, event.get_text(), event.attrs['data-key']] for counter, event in enumerate(soup.find('ul',
-            class_=re.compile('list-group$')).find_all('a', href=re.compile(SUBURL_REG)), 1)]
+                                                                                                                  class_=re.compile('list-group$')).find_all('a', href=re.compile(SUBURL_REG)), 1)]
 
         print(tabulate(subList, headers=[
               'S.No', 'Subject', 'ID'], tablefmt='pretty'))
 
 
 def listSubjects(session, headers, sesskey):
-    api_payload = json.loads(courses_api_payload)
     courses_api_params['sesskey'] = sesskey
-    responce = session.post(API, verify=False ,headers=headers, params=courses_api_params, data=json.dumps(api_payload))
+    responce = session.post(API, verify=False, headers=headers,
+                            params=courses_api_params, data=json.dumps(courses_api_payload))
 
     print()
-    tab_data = [[counter, row['fullnamedisplay'], row['shortname'], row['id'], row['progress']] for counter, row in enumerate(responce.json()[0]['data']['courses'], 1)]
-    print(tabulate(tab_data, headers=['S.No', 'Full Name', 'Short Name', 'ID', 'progress'], tablefmt='pretty'))
+    tab_data = [[counter, row['fullnamedisplay'], row['shortname'], row['id'], row['progress']]
+                for counter, row in enumerate(responce.json()[0]['data']['courses'], 1)]
+    print(tabulate(tab_data, headers=[
+          'S.No', 'Full Name', 'Short Name', 'ID', 'progress'], tablefmt='pretty'))
 
     choice = input('Enter choice : ')
-        
+
     try:
         if (choice.isdigit()):
             subjectMaterial(session, headers, tab_data[int(choice)-1][3])
@@ -157,7 +158,7 @@ def subjectMaterial(session, headers, subId):
                     download_resource(baseurl, session, headers)
                 elif (printMaterial[int(choice)-1][2] == 'video'):
                     play_video('vlc', baseurl, session, headers)
-                else :
+                else:
                     print('its attendance')
 
             else:

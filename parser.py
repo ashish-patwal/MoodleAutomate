@@ -3,7 +3,7 @@ import sys
 
 
 def cmd_parser():
-    parser = argparse.ArgumentParser(f'''
+    parser = argparse.ArgumentParser('''
 
     MOODLE AUTOMATOR
 
