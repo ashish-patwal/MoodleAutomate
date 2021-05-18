@@ -5,6 +5,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 class RequestURL:
+    """Requests the url and returns the soup."""
 
     def __init__(self, URL, session, headers) -> None:
         self.URL = URL
@@ -23,6 +24,7 @@ class RequestURL:
 
 
 class PostToURL:
+    """Post requests to the url and returns the responce."""
 
     def __init__(self, URL, session, headers, payload) -> None:
         self.URL = URL

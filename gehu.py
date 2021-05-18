@@ -4,7 +4,7 @@ import sys
 from context import RequestURL, PostToURL
 from parser import cmd_parser
 from const import URL, MAINURL, params, headers, motive
-from util import calenderEvents, listSubjects, submitAttendance, subjectList
+from util import calenderEvents, listSubjects, submitAttendance
 
 # payload = {
 #        'sessid': '2542',
@@ -37,23 +37,13 @@ else:
                 print('updated cookies for moodle session')
                 print('-'*20)
 
-                #    api_params['sesskey'] = soup.find('input', {'name': 'sesskey'})['value']
-
-                # print(api_params)
-
-                #responce = session.post(API, verify=False ,headers=headers, params=api_params, data=json.dumps(api_payload))
-                # print(responce.status_code)
-                # with open('result.json', 'w') as file:
-                #    json.dump(responce.json(), file, indent=4, sort_keys=True)
-                #format_str = json.dumps(responce.json(), indent=4)
-                # print(format_str)
-
                 if args.show_motive:
                     print(motive)
 
                 elif args.list_subjects:
                     with RequestURL(MAINURL, session, headers) as soup:
-                        sesskey = soup.find('input', {'name': 'sesskey'})['value']
+                        sesskey = soup.find(
+                            'input', {'name': 'sesskey'})['value']
                     listSubjects(session, headers, sesskey)
 
                 elif args.mark_attendance:

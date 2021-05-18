@@ -1,8 +1,8 @@
 import argparse
 import sys
 
-
-def cmd_parser():
+def cmd_parser() -> 'argument':
+    """Parses the command line arguments."""
     parser = argparse.ArgumentParser('''
 
     MOODLE AUTOMATOR
