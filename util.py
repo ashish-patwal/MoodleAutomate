@@ -8,18 +8,22 @@ from timestamp import timestamp
 from operations import play_video, download_resource
 from context import RequestURL, PostToURL
 from const import API, courses_api_params, courses_api_payload
-from const import payload, MAINURL, CLNDRURL, SUBURL, SUBURL_REG, VIDEOURL_REG, RESOURCEURL_REG, ATTENDANCEURL_REG, MARKATTENDANCEURL
+from const import payload, MAINURL, CLNDRURL, SUBURL \
+    , VIDEOURL_REG, RESOURCEURL_REG, ATTENDANCEURL_REG, MARKATTENDANCEURL
 
 
-def dateAndTime(soup):
-    return (''.join(data.get_text().split()) for data in soup.find('div', {'class': 'calendarwrapper'}).find_all('div', class_=re.         compile('^row$')))
+def dateAndTime(soup) -> 'Data':
+    """Function that returns the data of the events like time , date and name of event."""
+    return (''.join(data.get_text().split()) for data in soup.find('div', {'class': 'calendarwrapper'}).find_all('div', class_=re.compile('^row$')))
 
 
-def Links(soup):
+def Links(soup) -> 'Links':
+    """Function that returns the links of events for submitting attendance."""
     return (data.attrs['href'] for data in soup.find('div', {'class': 'maincalendar'}).find_all('a', href=re.compile(ATTENDANCEURL_REG)))
 
 
-def submitAttendance(session, headers):
+def submitAttendance(session, headers) -> None:
+    """Submits the attendance for every calender event if submit attendance link is found."""
     print('Submitting attendance if any in calender')
     print('-'*20)
     with RequestURL(CLNDRURL, session, headers) as soup:
@@ -28,7 +32,8 @@ def submitAttendance(session, headers):
                 link, session, headers)).start()
 
 
-def calenderEvents(session, headers):
+def calenderEvents(session, headers) -> None:
+    """Shows the calender events"""
     print('Showing upcoming events')
     print('-'*20)
     with RequestURL(CLNDRURL, session, headers) as soup:
@@ -43,21 +48,24 @@ def calenderEvents(session, headers):
             print('-'*20)
 
 
-def markAttendance(targetURL, session, headers):
-
+def markAttendance(targetURL, session, headers) -> None:
+    """Function that marks the attendance for every calender event."""
     payload_instance = dict(payload)
 
     with RequestURL(targetURL, session, headers) as soup:
         title = soup.title.string
         try:
             target = soup.find('a', text='Submit attendance')['href']
+
         except TypeError:
             print(title)
             print('NO Submission Link')
             print('-'*20)
+
         else:
             for k, v in parse_qs(urlparse(target).query).items():
                 payload_instance[k] = ''.join(v)
+
             with RequestURL(target, session, headers) as soup2:
                 presentValue = soup2.find(
                     'input', {'name': 'status', 'type': 'radio'})['value']
@@ -65,7 +73,6 @@ def markAttendance(targetURL, session, headers):
                 payload_instance.setdefault('status', presentValue)
 
                 with PostToURL(MARKATTENDANCEURL, session, headers, payload_instance) as responce:
-
                     print(title)
 
                     if responce.status_code == codes['ok']:
@@ -75,24 +82,18 @@ def markAttendance(targetURL, session, headers):
                     print('-'*20)
 
 
-def subjectList(session, headers):
-    with RequestURL(MAINURL, session, headers) as soup:
+def listSubjects(session, headers, sesskey) -> None:
+    """Prints the list of subjects from a json responce object."""
 
-        subList = [[counter, event.get_text(), event.attrs['data-key']] for counter, event in enumerate(soup.find('ul',
-                                                                                                                  class_=re.compile('list-group$')).find_all('a', href=re.compile(SUBURL_REG)), 1)]
-
-        print(tabulate(subList, headers=[
-              'S.No', 'Subject', 'ID'], tablefmt='pretty'))
-
-
-def listSubjects(session, headers, sesskey):
     courses_api_params['sesskey'] = sesskey
     responce = session.post(API, verify=False, headers=headers,
                             params=courses_api_params, data=json.dumps(courses_api_payload))
 
     print()
+
     tab_data = [[counter, row['fullnamedisplay'], row['shortname'], row['id'], row['progress']]
                 for counter, row in enumerate(responce.json()[0]['data']['courses'], 1)]
+
     print(tabulate(tab_data, headers=[
           'S.No', 'Full Name', 'Short Name', 'ID', 'progress'], tablefmt='pretty'))
 
@@ -108,11 +109,14 @@ def listSubjects(session, headers, sesskey):
         print('Wrong Input')
 
 
-def titleStringSolver(title):
+def titleStringSolver(title) -> 'String':
+    """Returns the string after stripping unnecessay data."""
+
     return ' '.join(title.split()[:-1]) if len(title.split()) > 1 else title.strip()
 
 
-def typeParser(links, material):
+def typeParser(links, material) -> 'List':
+    """Returns the list of links paired with their type"""
 
     searcher = re.compile('(' + VIDEOURL_REG + ')' + '|' +
                           '(' + ATTENDANCEURL_REG + ')' + '|' + '(' + RESOURCEURL_REG + ')')
@@ -133,30 +137,32 @@ def typeParser(links, material):
     return displayList
 
 
-def subjectMaterial(session, headers, subId):
+def subjectMaterial(session, headers, subId) -> None:
+    """Prints the resources for a particular subject."""
+
     with RequestURL(f'{SUBURL}{subId}', session, headers) as soup:
-        links = soup.find_all('a', href=re.compile(
+        linksData = soup.find_all('a', href=re.compile(
             VIDEOURL_REG + '|' + ATTENDANCEURL_REG + '|' + RESOURCEURL_REG))
 
-        linkss = [link.attrs['href'] for link in links]
+        linksHref = [link.attrs['href'] for link in linksData]
 
-        material = [[counter, titleStringSolver(link.get_text()), link.attrs['href']]
-                    for counter, link in enumerate(links, 1)]
+        dataList = [[counter, titleStringSolver(link.get_text()), link.attrs['href']]
+                    for counter, link in enumerate(linksData, 1)]
 
-        printMaterial = typeParser(linkss, material)
+        printDataList = typeParser(linksHref, dataList)
 
-        print(tabulate(printMaterial, headers=[
+        print(tabulate(printDataList, headers=[
               'S.No', 'Title', 'type'], tablefmt='pretty'))
 
         choice = input('Enter choice : ')
+
         try:
-            print('ok')
             if (choice.isdigit()):
-                baseurl = material[int(choice)-1][2]
-                if (printMaterial[int(choice)-1][2] == 'resource'):
-                    print('resource')
+                baseurl = dataList[int(choice)-1][2]
+
+                if (printDataList[int(choice)-1][2] == 'resource'):
                     download_resource(baseurl, session, headers)
-                elif (printMaterial[int(choice)-1][2] == 'video'):
+                elif (printDataList[int(choice)-1][2] == 'video'):
                     play_video('vlc', baseurl, session, headers)
                 else:
                     print('its attendance')
