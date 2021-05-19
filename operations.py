@@ -1,5 +1,7 @@
 from subprocess import Popen, PIPE
 from urllib.parse import urlparse
+from parser import load_preference
+from const import preference
 import urllib3
 import os
 
@@ -9,16 +11,18 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 @check_preference
-def play_video(player, url, session, headers) -> None:
+def play_video(url, session, headers) -> None:
     """Plays the video on media player if it's youtube otherwise on browser."""
     responce = session.get(url, verify=False, headers=headers)
 
+    load_preference()
+
     if urlparse(responce.url).netloc.find('drive.google.com') != -1:
-        p = Popen(['brave', responce.url], stdout=PIPE, stderr=PIPE)
+        p = Popen([preference['browser'], responce.url], stdout=PIPE, stderr=PIPE)
         stdout, stderr = p.communicate()
 
-    elif urlparse(responce.url).netloc.find('youtube' != -1):
-        p = Popen([player, responce.url], stdout=PIPE, stderr=PIPE)
+    elif urlparse(responce.url).netloc.find('youtube') != -1:
+        p = Popen([preference['player'], responce.url], stdout=PIPE, stderr=PIPE)
         stdout, stderr = p.communicate()
         p.wait()
     

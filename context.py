@@ -4,7 +4,7 @@ import urllib3
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-from parser import load_preference
+from parser import load_config, load_preference
 from const import config, preference
 
 class RequestURL:
@@ -48,6 +48,7 @@ class PostToURL:
 def check_config(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
+        load_config()
         if not config['username'] or not config['password']:
             print('Provide credentials with python gehu.py --username <YOUR_USERNAME> --password <YOUR_PASSWORD> ')
         else:

@@ -4,7 +4,6 @@ from requests import codes
 import json
 import re
 import threading
-from timestamp import timestamp
 from operations import play_video, download_resource
 from context import RequestURL, PostToURL
 from const import API, courses_api_params, courses_api_payload
@@ -163,7 +162,7 @@ def subjectMaterial(session, headers, subId) -> None:
                 if (printDataList[int(choice)-1][2] == 'resource'):
                     download_resource(baseurl, session, headers)
                 elif (printDataList[int(choice)-1][2] == 'video'):
-                    play_video('vlc', baseurl, session, headers)
+                    play_video(baseurl, session, headers)
                 else:
                     print('its attendance')
 

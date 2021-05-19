@@ -89,8 +89,4 @@ def cmd_parser() -> 'argument':
         preference['browser'] = args.browser
         write_preference()
 
-    if not config['username'] or not config['password']:
-        print('Please enter credentials using python gehu.py --username [username] --password [password]')
-        exit(1)
-
     return args
