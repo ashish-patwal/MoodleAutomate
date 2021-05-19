@@ -1,3 +1,6 @@
+import os
+import tempfile
+
 URL = 'http://45.116.207.79/moodle/login/index.php'
 
 MAINURL = "http://45.116.207.79/moodle/my/"
@@ -18,22 +21,90 @@ RESOURCEURL = 'http://45.116.207.79/moodle/mod/resource/view.php?id='
 ATTENDANCEURL_REG = '^http://45\.116\.207\.79/moodle/mod/attendance/view\.php\?id=[0-9]*$'
 ATTENDANCEURL = 'http://45.116.207.79/moodle/mod/attendance/view.php?id='
 
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'}
 
-params = {'logintoken': 'Not updated', 'username': 'Your_username', 'password': 'Your_password'}
+config = {'logintoken': None,
+          'username': None,
+          'password': None
+          }
+
+preference = {
+    'player': None,
+    'browser': None
+    }
 
 payload = {
     'submitbutton': 'Save+changes',
     '_qf__mod_attendance_student_attendance_form': '1',
     'mform_isexpanded_id_session': '1'}
 
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 API = 'http://45.116.207.79/moodle/lib/ajax/service.php'
 
-courses_api_params = {'info': 'core_course_get_enrolled_courses_by_timeline_classification'}
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-courses_api_payload = '[{"index":0,"methodname":"core_course_get_enrolled_courses_by_timeline_classification","args":{"offset":0,"limit":0,"classification":"all","sort":"fullname","customfieldname":"","customfieldvalue":""}}]'
+notification_api_params = {
+    'sesskey': None,
+    'info': 'core_fetch_notifications'
+}
 
+notification_api_payload = [{
+    'index': 0,
+    'methodname': 'core_fetch_notifications',
+    'args': {
+        'contextid': None
+    }
+}]
+
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+calender_api_params = {
+    'sesskey': None,
+    'info': 'core_calendar_get_action_events_by_timesort'
+}
+
+calender_api_payload = [{
+    'index': 0,
+    'methodname': 'core_calendar_get_action_events_by_timesort',
+    'args': {
+        'limitnum': 11,
+        'timesortfrom': None,
+        'timesortto': None,
+        'limittononsuspendedevents': True}
+}]
+
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+courses_api_params = {
+    'sesskey': None,
+    'info': 'core_course_get_enrolled_courses_by_timeline_classification'
+}
+
+courses_api_payload = [{
+    "index": 0,
+    "methodname": "core_course_get_enrolled_courses_by_timeline_classification",
+    "args": {
+        "offset": 0,
+        "limit": 0,
+        "classification": "all",
+        "sort": "fullname",
+        "customfieldname": "",
+        "customfieldvalue": ""}
+}]
+
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+MOODLE_HOME = os.path.join(os.getenv('HOME', tempfile.gettempdir()), '.moodle')
+
+MOODLE_CONFIG = os.path.join(MOODLE_HOME, 'config.json')
+
+MOODLE_PREFERENCE = os.path.join(MOODLE_HOME, 'preference.json')
+
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 motive = '''
 I wanna be the very best
@@ -96,3 +167,5 @@ Gotta catch 'em all
 (Pokemon!)
 
 '''
+
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

@@ -2,8 +2,8 @@ import requests
 import sys
 
 from context import RequestURL, PostToURL
-from parser import cmd_parser
-from const import URL, MAINURL, params, headers, motive
+from parser import cmd_parser, write_config
+from const import URL, MAINURL, config, headers, motive
 from util import calenderEvents, listSubjects, submitAttendance
 
 args = cmd_parser()
@@ -18,16 +18,18 @@ else:
 
     with requests.Session() as session:
         with RequestURL(URL, session, headers) as soup:
-            params['logintoken'] = soup.find(
+            config['logintoken'] = soup.find(
                 'input', {'name': 'logintoken'})['value']
 
         print()
         print('Authenticating with Moodle')
         print('-'*20)
 
-        with PostToURL(URL, session, headers, params) as responce:
+        with PostToURL(URL, session, headers, config) as responce:
             if responce.url == URL:
                 print('Wrong Credentials')
+                write_config()
+
             else:
                 headers.update(session.cookies.get_dict())
                 print('updated cookies for moodle session')

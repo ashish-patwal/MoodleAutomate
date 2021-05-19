@@ -3,9 +3,12 @@ from urllib.parse import urlparse
 import urllib3
 import os
 
+from context import check_preference
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
+@check_preference
 def play_video(player, url, session, headers) -> None:
     """Plays the video on media player if it's youtube otherwise on browser."""
     responce = session.get(url, verify=False, headers=headers)

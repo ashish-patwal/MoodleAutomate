@@ -1,7 +1,51 @@
+import os
+import json
 import argparse
 import sys
 
+from const import MOODLE_HOME, MOODLE_CONFIG, MOODLE_PREFERENCE, config, preference
+
+def load_config():
+    if not os.path.exists(MOODLE_CONFIG):
+        return
+
+    try:
+        with open(MOODLE_CONFIG, 'r') as f:
+            config.update(json.load(f))
+    except json.JSONDecodeError:
+        write_config()
+
+def write_config():
+    if not os.path.exists(MOODLE_HOME):
+        os.mkdir(MOODLE_HOME)
+
+    with open(MOODLE_CONFIG, 'w') as f:
+        f.write(json.dumps(config))
+
+
+def load_preference():
+    if not os.path.exists(MOODLE_PREFERENCE):
+        return
+
+    try:
+        with open(MOODLE_PREFERENCE, 'r') as f:
+            preference.update(json.load(f))
+    except json.JSONDecodeError:
+        write_preference()
+
+
+def write_preference():
+    if not os.path.exists(MOODLE_HOME):
+        os.mkdir(MOODLE_HOME)
+
+    with open(MOODLE_PREFERENCE, 'w') as f:
+        f.write(json.dumps(preference))
+
 def cmd_parser() -> 'argument':
+
+    load_config()
+    load_preference()
+
     """Parses the command line arguments."""
     parser = argparse.ArgumentParser('''
 
@@ -18,7 +62,35 @@ def cmd_parser() -> 'argument':
                        action='store_true', help='displays subject')
     group.add_argument('--motive', '-m', dest='show_motive',
                        action='store_true', help='displays my motive')
+    parser.add_argument('--username', '-u', dest='username',
+                       action='store', help='saves username')
+    parser.add_argument('--password', '-p', dest='password',
+                       action='store', help='saves password')
+    parser.add_argument('--player', '-P', dest='player',
+                        action='store', help='value for media player')
+    parser.add_argument('--browser', '-b', dest='browser',
+                        action='store', help='value for browser')
 
     args = parser.parse_args(sys.argv[1:])
+
+    if args.username is not None:
+        config['username'] = args.username
+        write_config()
+
+    if args.password is not None:
+        config['password'] = args.password
+        write_config()
+
+    if args.player is not None:
+        preference['player'] = args.player
+        write_preference()
+
+    if args.browser is not None:
+        preference['browser'] = args.browser
+        write_preference()
+
+    if not config['username'] or not config['password']:
+        print('Please enter credentials using python gehu.py --username [username] --password [password]')
+        exit(1)
 
     return args

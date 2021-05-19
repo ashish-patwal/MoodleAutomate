@@ -1,8 +1,11 @@
 from bs4 import BeautifulSoup
+from functools import wraps
 import urllib3
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+from parser import load_preference
+from const import config, preference
 
 class RequestURL:
     """Requests the url and returns the soup."""
@@ -40,3 +43,26 @@ class PostToURL:
 
     def __exit__(self, exec_type, exec_value, exec_trace) -> None:
         pass
+
+
+def check_config(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        if not config['username'] or not config['password']:
+            print('Provide credentials with python gehu.py --username <YOUR_USERNAME> --password <YOUR_PASSWORD> ')
+        else:
+            return(func(*args, **kwargs))
+
+    return wrapper
+
+
+def check_preference(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        load_preference()
+        if not preference['player'] or not preference['browser']:
+            print('Provide preferecne with python gehu.py --player <YOUR_PREFERRED_MEDIA_PLAYER> --browser <YOUR_PREFERRED_BROWSER> ')
+        else:
+            return(func(*args, **kwargs))
+
+    return wrapper
