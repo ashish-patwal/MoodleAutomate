@@ -6,8 +6,6 @@ With all due regards this is only a spaghetti code, feel free to add any feature
 
 Prerequisite :
 
-Update username and password in const.py
-
 Python library needed :
 tabulate 
 bs4
@@ -17,6 +15,10 @@ BASIC USAGE :
 
 python gehu.py -h ---> Displays help options
 
+python gehu.py --username <YOUR_USERNAME> --password <YOUR_PASSWORD> saves config for username and pasword
+
+python gehu.py --player <YOUR_FAV_MEDIA_PLAYER> --browser <YOUR_FAV_BROWSER> saves preference for media player and browser
+
 python gehu.py -e / python gehu.py --events ---> Displays upcoming events in calender 
 
 python gehu.py -a / python gehu.py --attendance --> Takes attendance if there is any in upcoming events. Works only when there is a submit button present
@@ -24,3 +26,4 @@ python gehu.py -a / python gehu.py --attendance --> Takes attendance if there is
 python gehu.py -s / python gehu.py --subjects ---> Displays subjects 
 
 python gehu.py -m / python gehu.py --motive ---> Unveils my motive 
+
