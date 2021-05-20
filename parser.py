@@ -89,4 +89,10 @@ def cmd_parser() -> 'argument':
         preference['browser'] = args.browser
         write_preference()
 
+    if args.username or args.password or args.player or args.browser:
+        print()
+        print('Configuration saved')
+        exit(0)
+
+
     return args
