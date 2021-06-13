@@ -105,7 +105,7 @@ def listSubjects(session, headers, sesskey) -> None:
             print('Wrong Input')
 
     except IndexError:
-        print('Wrong Input')
+        print('value out of index')
 
 
 def titleStringSolver(title) -> 'String':
@@ -163,11 +163,16 @@ def subjectMaterial(session, headers, subId) -> None:
                     download_resource(baseurl, session, headers)
                 elif (printDataList[int(choice)-1][2] == 'video'):
                     play_video(baseurl, session, headers)
+                elif (printDataList[int(choice)-1][2] == 'attendance'):
+                    pass
                 else:
-                    print('its attendance')
+                    print('Something new just emerged . Contact the dev .')
 
             else:
                 print('Wrong Input')
+
+        except IndexError:
+            print('value out of index')
 
         except:
             print('Error in util')
