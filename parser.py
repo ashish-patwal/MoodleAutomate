@@ -70,6 +70,8 @@ def cmd_parser() -> 'argument':
                         action='store', help='value for media player')
     parser.add_argument('--browser', '-b', dest='browser',
                         action='store', help='value for browser')
+    parser.add_argument('--download-dir', '-d', dest='downloadDir',
+                        action='store', help='location of download directory')
 
     args = parser.parse_args(sys.argv[1:])
 
@@ -89,7 +91,16 @@ def cmd_parser() -> 'argument':
         preference['browser'] = args.browser
         write_preference()
 
-    if args.username or args.password or args.player or args.browser:
+    if args.downloadDir is not None:
+        if os.path.exists(args.downloadDir):
+            preference['download_dir'] = args.downloadDir
+            write_preference()
+        else:
+            print('Path does not exist. Give an absolute path .')
+            exit(0)
+
+    if args.username or args.password or args.player or args.browser \
+       or args.downloadDir:
         print()
         print('Configuration saved')
         exit(0)

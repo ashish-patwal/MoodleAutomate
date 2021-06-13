@@ -5,12 +5,13 @@ from const import preference
 import urllib3
 import os
 
-from context import check_preference
+from context import check_preference_video, check_preference_downloadDir
+from const import preference
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
-@check_preference
+@check_preference_video
 def play_video(url, session, headers) -> None:
     """Plays the video on media player if it's youtube otherwise on browser."""
     responce = session.get(url, verify=False, headers=headers)
@@ -30,12 +31,12 @@ def play_video(url, session, headers) -> None:
         print('ptanin kahan dali hai video')
 
 
+@check_preference_downloadDir
 def download_resource(url, session, headers) -> None:
     """Downloads the file resource and saves it in current directory."""
     responce = session.get(url, verify=False, headers=headers)
 
-    filename = os.path.basename(urlparse(responce.url).path)
+    filename = os.path.join(preference['download_dir'], os.path.basename(urlparse(responce.url).path))
 
     with open(filename, 'wb') as file:
         file.write(responce.content)
-

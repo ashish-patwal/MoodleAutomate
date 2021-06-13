@@ -57,12 +57,23 @@ def check_config(func):
     return wrapper
 
 
-def check_preference(func):
+def check_preference_video(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         load_preference()
         if not preference['player'] or not preference['browser']:
-            print('Provide preferecne with python gehu.py --player <YOUR_PREFERRED_MEDIA_PLAYER> --browser <YOUR_PREFERRED_BROWSER> ')
+            print('Provide preference with python gehu.py --player <YOUR_PREFERRED_MEDIA_PLAYER> --browser <YOUR_PREFERRED_BROWSER> ')
+        else:
+            return(func(*args, **kwargs))
+
+    return wrapper
+
+def check_preference_downloadDir(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        load_preference()
+        if not preference['download_dir']:
+            print('Provide preference with python gehu.py --download-dir <PATH TO DOWNLOAD DIRECTORY> ')
         else:
             return(func(*args, **kwargs))
 

@@ -33,7 +33,8 @@ config = {'logintoken': None,
 
 preference = {
     'player': None,
-    'browser': None
+    'browser': None,
+    'download_dir': None
     }
 
 payload = {
