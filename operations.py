@@ -16,11 +16,11 @@ def play_video(url, session, headers) -> None:
     """Plays the video on media player if it's youtube otherwise on browser."""
     responce = session.get(url, verify=False, headers=headers)
 
-    load_preference()
+    #load_preference()
 
     if urlparse(responce.url).netloc.find('drive.google.com') != -1:
         p = Popen([preference['browser'], responce.url], stdout=PIPE, stderr=PIPE)
-        stdout, stderr = p.communicate()
+        #stdout, stderr = p.communicate()
 
     elif urlparse(responce.url).netloc.find('youtube') != -1:
         p = Popen([preference['player'], responce.url], stdout=PIPE, stderr=PIPE)
