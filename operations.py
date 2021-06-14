@@ -1,7 +1,5 @@
 from subprocess import Popen, PIPE
 from urllib.parse import urlparse
-from parser import load_preference
-from const import preference
 import urllib3
 import os
 

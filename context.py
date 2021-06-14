@@ -1,11 +1,12 @@
+from parser import load_config, load_preference
+from const import config, preference
+
 from bs4 import BeautifulSoup
 from functools import wraps
 import urllib3
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-from parser import load_config, load_preference
-from const import config, preference
 
 class RequestURL:
     """Requests the url and returns the soup."""

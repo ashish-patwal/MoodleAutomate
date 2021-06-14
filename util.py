@@ -2,6 +2,7 @@ from tabulate import tabulate
 from urllib.parse import urlparse, parse_qs
 from requests import codes
 import json
+import os
 import re
 import threading
 from operations import play_video, download_resource
@@ -10,6 +11,21 @@ from const import API, courses_api_params, courses_api_payload
 from const import payload, MAINURL, CLNDRURL, SUBURL \
     , VIDEOURL_REG, RESOURCEURL_REG, ATTENDANCEURL_REG, MARKATTENDANCEURL
 
+def configSetter() -> None:
+    """Function that sets the config file"""
+    os.system('clear' if os.uname().sysname == 'Linux' else 'cls')
+
+    options = [[1, 'username'],
+               [2, 'password'],
+               [3, 'player'],
+               [4, 'browser'],
+               [5, 'download-dir']]
+
+    print(tabulate(options, headers=['S.No', 'type'], tablefmt='pretty'))
+    print()
+    choice = int(input('Enter a choice : '))
+
+    print(choice)
 
 def dateAndTime(soup) -> 'Data':
     """Function that returns the data of the events like time , date and name of event."""
