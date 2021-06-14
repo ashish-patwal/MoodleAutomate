@@ -6,7 +6,7 @@ import urllib3
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-class choiceRangeError(Exception):
+class userChoiceError(Exception):
     """Raised when choice is in wrong range"""
     pass
 

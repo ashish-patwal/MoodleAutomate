@@ -5,11 +5,10 @@ import sys
 from tabulate import tabulate
 
 from const import MOODLE_HOME, MOODLE_CONFIG, MOODLE_PREFERENCE, config, preference
-from context import choiceRangeError
-
+from context import userChoiceError
 def configSetter() -> None:
     """Function that sets the config file"""
-    os.system('clear' if os.uname().sysname == 'Linux' else 'cls')
+    os.system('clear' if os.name == 'posix' else 'cls')
 
     options = [[1, 'username', config['username']],
                [2, 'password', config['password']],
@@ -23,8 +22,8 @@ def configSetter() -> None:
 
         choice = int(input('\nEnter a choice : '))
 
-        if choice not in range(1,6):
-            raise choiceRangeError
+        if choice not in range(1, (len(options) + 1)):
+            raise userChoiceError
 
         newValue = input('\nEnter a new value : ')
 
@@ -50,11 +49,9 @@ def configSetter() -> None:
 
         print('\nConfiguration Saved')
 
-    except choiceRangeError:
+    except (userChoiceError, ValueError):
         print('\nInvalid input. Check your choice.')
 
-    except ValueError:
-        print('\nInvalid input. Use numerical keys.')
     # except Exception as e:
         # print(e)
 

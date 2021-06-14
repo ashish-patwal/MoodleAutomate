@@ -38,7 +38,6 @@ def main():
                     print('updated cookies for moodle session')
                     print('-'*20)
 
-
                     if args.list_subjects:
                         with RequestURL(MAINURL, session, headers) as soup:
                             sesskey = soup.find(

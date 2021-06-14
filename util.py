@@ -6,11 +6,14 @@ import os
 import re
 import threading
 from operations import play_video, download_resource
-from context import RequestURL, PostToURL, choiceRangeError
+from context import RequestURL, PostToURL, userChoiceError
 from const import API, courses_api_params, courses_api_payload
 from const import payload, MAINURL, CLNDRURL, SUBURL \
     , VIDEOURL_REG, RESOURCEURL_REG, ATTENDANCEURL_REG, MARKATTENDANCEURL
 
+def clearScreen() -> None:
+    """clears the screen buffer"""
+    os.system('clear' if os.name == 'posix' else 'cls')
 
 def dateAndTime(soup) -> 'Data':
     """Function that returns the data of the events like time , date and name of event."""
@@ -89,7 +92,7 @@ def listSubjects(session, headers, sesskey) -> None:
     responce = session.post(API, verify=False, headers=headers,
                             params=courses_api_params, data=json.dumps(courses_api_payload))
 
-    print()
+    clearScreen()
 
     tab_data = [[counter, row['fullnamedisplay'], row['shortname'], row['id'], row['progress']]
                 for counter, row in enumerate(responce.json()[0]['data']['courses'], 1)]
@@ -97,13 +100,18 @@ def listSubjects(session, headers, sesskey) -> None:
     print(tabulate(tab_data, headers=[
           'S.No', 'Full Name', 'Short Name', 'ID', 'progress'], tablefmt='pretty'))
 
-    choice = input('Enter choice : ')
-
     try:
-        if (choice.isdigit()):
-            subjectMaterial(session, headers, tab_data[int(choice)-1][3])
-        else:
-            print('Wrong Input')
+        print(len(tab_data))
+
+        choice = int(input('Enter choice : '))
+
+        if choice not in range(1, len(tab_data) + 1):
+            raise userChoiceError
+
+        subjectMaterial(session, headers, tab_data[choice-1][3])
+
+    except (userChoiceError, ValueError):
+        print('Invalid input. Check your choice.')
 
     except IndexError:
         print('value out of index')
@@ -151,6 +159,8 @@ def subjectMaterial(session, headers, subId) -> None:
 
         printDataList = typeParser(linksHref, dataList)
 
+        clearScreen()
+
         print(tabulate(printDataList, headers=[
               'S.No', 'Title', 'type'], tablefmt='pretty'))
 
@@ -160,7 +170,7 @@ def subjectMaterial(session, headers, subId) -> None:
             choice = input('Enter choice : ')
 
             if choice not in range(1,len(printDataList) + 1) or not choice.isdigit():
-                raise choiceRangeError
+                raise userChoiceError
 
             if (choice.isdigit()):
                 baseurl = dataList[int(choice)-1][2]
@@ -177,7 +187,7 @@ def subjectMaterial(session, headers, subId) -> None:
             else:
                 print('Wrong Input')
 
-        except choiceRangeError:
+        except userChoiceError:
             print('\nInvalid input. Check your responce.')
 
         except IndexError:
