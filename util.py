@@ -6,26 +6,11 @@ import os
 import re
 import threading
 from operations import play_video, download_resource
-from context import RequestURL, PostToURL
+from context import RequestURL, PostToURL, choiceRangeError
 from const import API, courses_api_params, courses_api_payload
 from const import payload, MAINURL, CLNDRURL, SUBURL \
     , VIDEOURL_REG, RESOURCEURL_REG, ATTENDANCEURL_REG, MARKATTENDANCEURL
 
-def configSetter() -> None:
-    """Function that sets the config file"""
-    os.system('clear' if os.uname().sysname == 'Linux' else 'cls')
-
-    options = [[1, 'username'],
-               [2, 'password'],
-               [3, 'player'],
-               [4, 'browser'],
-               [5, 'download-dir']]
-
-    print(tabulate(options, headers=['S.No', 'type'], tablefmt='pretty'))
-    print()
-    choice = int(input('Enter a choice : '))
-
-    print(choice)
 
 def dateAndTime(soup) -> 'Data':
     """Function that returns the data of the events like time , date and name of event."""
@@ -169,9 +154,14 @@ def subjectMaterial(session, headers, subId) -> None:
         print(tabulate(printDataList, headers=[
               'S.No', 'Title', 'type'], tablefmt='pretty'))
 
-        choice = input('Enter choice : ')
 
         try:
+
+            choice = input('Enter choice : ')
+
+            if choice not in range(1,len(printDataList) + 1) or not choice.isdigit():
+                raise choiceRangeError
+
             if (choice.isdigit()):
                 baseurl = dataList[int(choice)-1][2]
 
@@ -186,6 +176,9 @@ def subjectMaterial(session, headers, subId) -> None:
 
             else:
                 print('Wrong Input')
+
+        except choiceRangeError:
+            print('\nInvalid input. Check your responce.')
 
         except IndexError:
             print('value out of index')
