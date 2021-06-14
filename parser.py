@@ -5,22 +5,59 @@ import sys
 from tabulate import tabulate
 
 from const import MOODLE_HOME, MOODLE_CONFIG, MOODLE_PREFERENCE, config, preference
+from context import choiceRangeError
 
 def configSetter() -> None:
     """Function that sets the config file"""
     os.system('clear' if os.uname().sysname == 'Linux' else 'cls')
 
-    options = [[1, 'username'],
-               [2, 'password'],
-               [3, 'player'],
-               [4, 'browser'],
-               [5, 'download-dir']]
+    options = [[1, 'username', config['username']],
+               [2, 'password', config['password']],
+               [3, 'player', preference['player']],
+               [4, 'browser', preference['browser']],
+               [5, 'download_dir', preference['download_dir']]]
 
-    print(tabulate(options, headers=['S.No', 'type'], tablefmt='pretty'))
-    print()
-    choice = int(input('Enter a choice : '))
+    print(tabulate(options, headers=['S.No', 'type', 'Cur. Value'], tablefmt='pretty'))
 
-    print(choice)
+    try:
+
+        choice = int(input('\nEnter a choice : '))
+
+        if choice not in range(1,6):
+            raise choiceRangeError
+
+        newValue = input('\nEnter a new value : ')
+
+        if choice == 1:
+            config['username'] = newValue
+            write_config()
+        elif choice == 2:
+            config['password'] = newValue
+            write_config()
+        elif choice == 3:
+            preference['player'] = newValue
+            write_preference()
+        elif choice == 4:
+            preference['browser'] = newValue
+            write_preference()
+        elif choice == 5:
+            if os.path.exists(newValue):
+                preference['download_dir'] = newValue
+                write_preference()
+            else:
+                print('Path does not exist. Give an absolute path .')
+                exit(0)
+
+        print('\nConfiguration Saved')
+
+    except choiceRangeError:
+        print('\nInvalid input. Check your choice.')
+
+    except ValueError:
+        print('\nInvalid input. Use numerical keys.')
+    # except Exception as e:
+        # print(e)
+
 
 def load_config():
     if not os.path.exists(MOODLE_CONFIG):
@@ -81,52 +118,12 @@ def cmd_parser() -> 'argument':
                        action='store_true', help='displays my motive')
     group.add_argument('--config', '-c', dest='config',
                        action='store_true', help='helps to set config variables')
-    # parser.add_argument('--username', '-u', dest='username',
-    #                    action='store', help='saves username')
-    # parser.add_argument('--password', '-p', dest='password',
-    #                    action='store', help='saves password')
-    # parser.add_argument('--player', '-P', dest='player',
-    #                     action='store', help='value for media player')
-    # parser.add_argument('--browser', '-b', dest='browser',
-    #                     action='store', help='value for browser')
-    # parser.add_argument('--download-dir', '-d', dest='downloadDir',
-    #                     action='store', help='location of download directory')
 
     args = parser.parse_args(sys.argv[1:])
 
     if args.config:
         configSetter()
         exit(0)
-
-    # if args.username is not None:
-    #     config['username'] = args.username
-    #     write_config()
-
-    # if args.password is not None:
-    #     config['password'] = args.password
-    #     write_config()
-
-    # if args.player is not None:
-    #     preference['player'] = args.player
-    #     write_preference()
-
-    # if args.browser is not None:
-    #     preference['browser'] = args.browser
-    #     write_preference()
-
-    # if args.downloadDir is not None:
-    #     if os.path.exists(args.downloadDir):
-    #         preference['download_dir'] = args.downloadDir
-    #         write_preference()
-    #     else:
-    #         print('Path does not exist. Give an absolute path .')
-    #         exit(0)
-
-    # if args.username or args.password or args.player or args.browser \
-    #    or args.downloadDir:
-    #     print()
-    #     print('Configuration saved')
-    #     exit(0)
 
 
     return args

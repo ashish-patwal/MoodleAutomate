@@ -1,4 +1,3 @@
-from parser import load_config, load_preference
 from const import config, preference
 
 from bs4 import BeautifulSoup
@@ -7,6 +6,9 @@ import urllib3
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+class choiceRangeError(Exception):
+    """Raised when choice is in wrong range"""
+    pass
 
 class RequestURL:
     """Requests the url and returns the soup."""
@@ -49,7 +51,6 @@ class PostToURL:
 def check_config(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        load_config()
         if not config['username'] or not config['password']:
             print('Provide credentials with python gehu.py --username <YOUR_USERNAME> --password <YOUR_PASSWORD> ')
         else:
@@ -61,7 +62,6 @@ def check_config(func):
 def check_preference_video(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        load_preference()
         if not preference['player'] or not preference['browser']:
             print('Provide preference with python gehu.py --player <YOUR_PREFERRED_MEDIA_PLAYER> --browser <YOUR_PREFERRED_BROWSER> ')
         else:
@@ -72,7 +72,6 @@ def check_preference_video(func):
 def check_preference_downloadDir(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        load_preference()
         if not preference['download_dir']:
             print('Provide preference with python gehu.py --download-dir <PATH TO DOWNLOAD DIRECTORY> ')
         else:
