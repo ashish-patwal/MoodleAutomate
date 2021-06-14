@@ -6,9 +6,15 @@ from tabulate import tabulate
 
 from const import MOODLE_HOME, MOODLE_CONFIG, MOODLE_PREFERENCE, config, preference
 from context import userChoiceError
+from util import clearScreen
+
 def configSetter() -> None:
     """Function that sets the config file"""
-    os.system('clear' if os.name == 'posix' else 'cls')
+    # os.system('clear' if os.name == 'posix' else 'cls')
+    clearScreen()
+
+    load_config()
+    load_preference()
 
     options = [[1, 'username', config['username']],
                [2, 'password', config['password']],
@@ -20,38 +26,42 @@ def configSetter() -> None:
 
     try:
 
-        choice = int(input('\nEnter a choice : '))
+        choice = input('\nEnter a choice 1 - 5 ( q to quit ): ')
 
-        if choice not in range(1, (len(options) + 1)):
-            raise userChoiceError
+        if choice == 'q':
+            clearScreen()
+            return
 
         newValue = input('\nEnter a new value : ')
 
-        if choice == 1:
+        if choice == '1':
             config['username'] = newValue
             write_config()
-        elif choice == 2:
+        elif choice == '2':
             config['password'] = newValue
             write_config()
-        elif choice == 3:
+        elif choice == '3':
             preference['player'] = newValue
             write_preference()
-        elif choice == 4:
+        elif choice == '4':
             preference['browser'] = newValue
             write_preference()
-        elif choice == 5:
+        elif choice == '5':
             if os.path.exists(newValue):
                 preference['download_dir'] = newValue
                 write_preference()
             else:
                 print('Path does not exist. Give an absolute path .')
                 exit(0)
+        else:
+            raise userChoiceError
 
         print('\nConfiguration Saved')
 
     except (userChoiceError, ValueError):
         print('\nInvalid input. Check your choice.')
 
+    configSetter()
     # except Exception as e:
         # print(e)
 
