@@ -15,9 +15,7 @@ BASIC USAGE :
 
 python gehu.py -h ---> Displays help options
 
-python gehu.py --username <YOUR_USERNAME> --password <YOUR_PASSWORD> saves config for username and pasword
-
-python gehu.py --player <YOUR_FAV_MEDIA_PLAYER> --browser <YOUR_FAV_BROWSER> saves preference for media player and browser
+python gehu.py -c / python gehu.py --config  --> saves config and other preference
 
 python gehu.py -e / python gehu.py --events ---> Displays upcoming events in calender 
 
