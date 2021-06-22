@@ -26,7 +26,7 @@ python gehu.py -s / python gehu.py --subjects ---> Displays subjects
 python gehu.py -m / python gehu.py --motive ---> Unveils my motive 
 
 ## Screenshots
-! [Config] (/Screenshots/config.png)
-! [Subjects] (/Screenshots/subjects.png)
-! [Topics] (/Screenshots/topics.png)
-! [Mpv-spawned] (/Screenshots/mpv.png)
+![Config](/Screenshots/config.png)
+![Subjects](/Screenshots/subjects.png)
+![Topics](/Screenshots/topics.png)
+![Mpv-spawned](/Screenshots/mpv.png)
