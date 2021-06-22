@@ -10,9 +10,8 @@ from util import clearScreen
 
 def configSetter() -> None:
     """Function that sets the config file"""
-    # os.system('clear' if os.name == 'posix' else 'cls')
-    clearScreen()
 
+    clearScreen()
     load_config()
     load_preference()
 
@@ -26,29 +25,31 @@ def configSetter() -> None:
 
     try:
 
+        configValue = None
         choice = input('\nEnter a choice 1 - 5 ( q to quit ): ')
 
-        if choice == 'q':
+        if choice == 'q' or choice == 'Q':
             clearScreen()
             return
 
-        newValue = input('\nEnter a new value : ')
+        elif int(choice) in range(1,6):
+            configValue = input('\nEnter a new value : ')
 
         if choice == '1':
-            config['username'] = newValue
+            config['username'] = configValue
             write_config()
         elif choice == '2':
-            config['password'] = newValue
+            config['password'] = configValue
             write_config()
         elif choice == '3':
-            preference['player'] = newValue
+            preference['player'] = configValue
             write_preference()
         elif choice == '4':
-            preference['browser'] = newValue
+            preference['browser'] = configValue
             write_preference()
         elif choice == '5':
-            if os.path.exists(newValue):
-                preference['download_dir'] = newValue
+            if os.path.exists(configValue):
+                preference['download_dir'] = configValue
                 write_preference()
             else:
                 print('Path does not exist. Give an absolute path .')
@@ -57,13 +58,13 @@ def configSetter() -> None:
             raise userChoiceError
 
         print('\nConfiguration Saved')
+        input()
 
     except (userChoiceError, ValueError):
         print('\nInvalid input. Check your choice.')
+        input()
 
     configSetter()
-    # except Exception as e:
-        # print(e)
 
 
 def load_config():
