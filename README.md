@@ -26,7 +26,7 @@ python gehu.py -s / python gehu.py --subjects ---> Displays subjects
 python gehu.py -m / python gehu.py --motive ---> Unveils my motive 
 
 ## Screenshots
-! [2021.06.22-12.05.39.screenshot.png] (https://github.com/ashish-patwal/MoodleAutomate/blob/master/Screeenshots/2021.06.22-12.05.39.screenshot.png)
-! [2021.06.22-11.21.09.screenshot.png] (https://github.com/ashish-patwal/MoodleAutomate/blob/master/Screeenshots/2021.06.22-11.21.09.screenshot.png)
-! [2021.06.22-12.02.27.screenshot.png] (https://github.com/ashish-patwal/MoodleAutomate/blob/master/Screeenshots/2021.06.22-12.02.27.screenshot.png)
-! [2021.06.22-12.05.17.screenshot.png] (https://github.com/ashish-patwal/MoodleAutomate/blob/master/Screeenshots/2021.06.22-12.05.17.screenshot.png)
+! [Config] (/Screenshots/config.png)
+! [Subjects] (/Screenshot/subjects.png)
+! [Topics] (/Screenshot/topics.png)
+! [Mpv-spawned] (/Screenshot/mpv.png)
