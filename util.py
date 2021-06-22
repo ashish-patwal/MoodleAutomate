@@ -169,7 +169,8 @@ def subjectMaterial(session, headers, subId) -> None:
 
             choice = input('Enter choice : ')
 
-            if choice not in range(1,len(printDataList) + 1) or not choice.isdigit():
+            if int(choice) not in range(1,len(printDataList) + 1) or not choice.isdigit(): 
+                print(choice)
                 raise userChoiceError
 
             if (choice.isdigit()):
