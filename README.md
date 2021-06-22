@@ -4,14 +4,14 @@
 
 With all due regards this is only a spaghetti code, feel free to add any features you want and modify it . Just give due credits and do mention the original source code so other people can also fork from this .
 
-### Prerequisite :
+## Prerequisite :
 
 Python library needed :
 tabulate 
 bs4
 html5lib
 
-### BASIC USAGE :
+## BASIC USAGE :
 
 python gehu.py -h ---> Displays help options
 
@@ -25,8 +25,8 @@ python gehu.py -s / python gehu.py --subjects ---> Displays subjects
 
 python gehu.py -m / python gehu.py --motive ---> Unveils my motive 
 
-### Screenshots
-![2021.06.22-12.05.39.screenshot.png] (https://github.com/ashish-patwal/MoodleAutomate/blob/master/Screeenshots/2021.06.22-12.05.39.screenshot.png)
-![2021.06.22-11.21.09.screenshot.png] (https://github.com/ashish-patwal/MoodleAutomate/blob/master/Screeenshots/2021.06.22-11.21.09.screenshot.png)
-![2021.06.22-12.02.27.screenshot.png] (https://github.com/ashish-patwal/MoodleAutomate/blob/master/Screeenshots/2021.06.22-12.02.27.screenshot.png)
-![2021.06.22-12.05.17.screenshot.png] (https://github.com/ashish-patwal/MoodleAutomate/blob/master/Screeenshots/2021.06.22-12.05.17.screenshot.png)
+## Screenshots
+! [2021.06.22-12.05.39.screenshot.png] (https://github.com/ashish-patwal/MoodleAutomate/blob/master/Screeenshots/2021.06.22-12.05.39.screenshot.png)
+! [2021.06.22-11.21.09.screenshot.png] (https://github.com/ashish-patwal/MoodleAutomate/blob/master/Screeenshots/2021.06.22-11.21.09.screenshot.png)
+! [2021.06.22-12.02.27.screenshot.png] (https://github.com/ashish-patwal/MoodleAutomate/blob/master/Screeenshots/2021.06.22-12.02.27.screenshot.png)
+! [2021.06.22-12.05.17.screenshot.png] (https://github.com/ashish-patwal/MoodleAutomate/blob/master/Screeenshots/2021.06.22-12.05.17.screenshot.png)
