@@ -1,17 +1,17 @@
 # MOODLE AUTOMATE
 
-##A basic python program to automate moodle platform 
+## A basic python program to automate moodle platform 
 
 With all due regards this is only a spaghetti code, feel free to add any features you want and modify it . Just give due credits and do mention the original source code so other people can also fork from this .
 
-###Prerequisite :
+### Prerequisite :
 
 Python library needed :
 tabulate 
 bs4
 html5lib
 
-###BASIC USAGE :
+### BASIC USAGE :
 
 python gehu.py -h ---> Displays help options
 
@@ -25,4 +25,4 @@ python gehu.py -s / python gehu.py --subjects ---> Displays subjects
 
 python gehu.py -m / python gehu.py --motive ---> Unveils my motive 
 
-###Screenshots
+### Screenshots
