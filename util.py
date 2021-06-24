@@ -101,7 +101,6 @@ def listSubjects(session, headers, sesskey) -> None:
           'S.No', 'Full Name', 'Short Name', 'ID', 'progress'], tablefmt='pretty'))
 
     try:
-        print(len(tab_data))
 
         choice = int(input('Enter choice : '))
 
