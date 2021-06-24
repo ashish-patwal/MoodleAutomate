@@ -169,6 +169,8 @@ def subjectMaterial(session, headers, subId) -> None:
 
             choice = input('Enter choice ( q to exit ): ')
 
+            exit(1) if choice == 'q' or choice == 'Q' else print()
+
             if int(choice) not in range(1,len(printDataList) + 1) or not choice.isdigit(): 
                 print(choice)
                 raise userChoiceError
@@ -191,5 +193,4 @@ def subjectMaterial(session, headers, subId) -> None:
         except IndexError:
             print('value out of index')
 
-        except:
-            print('Error in util')
+        subjectMaterial(session, headers, subId)
