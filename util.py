@@ -167,26 +167,23 @@ def subjectMaterial(session, headers, subId) -> None:
 
         try:
 
-            choice = input('Enter choice : ')
+            choice = input('Enter choice ( q to exit ): ')
 
             if int(choice) not in range(1,len(printDataList) + 1) or not choice.isdigit(): 
                 print(choice)
                 raise userChoiceError
 
-            if (choice.isdigit()):
-                baseurl = dataList[int(choice)-1][2]
+            baseurl = dataList[int(choice)-1][2]
 
-                if (printDataList[int(choice)-1][2] == 'resource'):
-                    download_resource(baseurl, session, headers)
-                elif (printDataList[int(choice)-1][2] == 'video'):
-                    play_video(baseurl, session, headers)
-                elif (printDataList[int(choice)-1][2] == 'attendance'):
-                    pass
-                else:
-                    print('Something new just emerged . Contact the dev .')
-
+            if (printDataList[int(choice)-1][2] == 'resource'):
+                download_resource(baseurl, session, headers)
+            elif (printDataList[int(choice)-1][2] == 'video'):
+                play_video(baseurl, session, headers)
+            elif (printDataList[int(choice)-1][2] == 'attendance'):
+                pass
             else:
-                print('Wrong Input')
+                print('Something new just emerged . Contact the dev .')
+
 
         except userChoiceError:
             print('\nInvalid input. Check your responce.')
