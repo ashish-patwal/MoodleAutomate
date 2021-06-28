@@ -30,3 +30,4 @@ python gehu.py -m / python gehu.py --motive ---> Unveils my motive
 ![Subjects](/Screenshots/subjects.png)
 ![Topics](/Screenshots/topics.png)
 ![Mpv-spawned](/Screenshots/mpv.png)
+![demo](https://user-images.githubusercontent.com/63491234/123659462-5762ad00-d850-11eb-89a7-cdd62828eb82.mp4)a
