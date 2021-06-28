@@ -11,6 +11,9 @@ tabulate
 bs4
 html5lib
 
+**install these libraries using the command given below**
+- python -r requirements.txt
+
 ## BASIC USAGE :
 
 python gehu.py -h ---> Displays help options
