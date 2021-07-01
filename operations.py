@@ -27,7 +27,7 @@ def play_video(url, session, headers) -> None:
         p.wait()
     
     else:
-        print('ptanin kahan dali hai video')
+        print('Unknown platform used')
 
 
 @check_preference_downloadDir

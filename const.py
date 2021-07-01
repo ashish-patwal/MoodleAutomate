@@ -107,66 +107,69 @@ MOODLE_PREFERENCE = os.path.join(MOODLE_HOME, 'preference.json')
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-motive = '''
-I wanna be the very best
-Like no one ever was
-To catch them is my real test
-To train them is my cause
+motive = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+motiveMsg = "Sorry but you just got RICKROLLED by the master of mischief !!!"
 
-I will travel across the land
-Searching far and wide
-Each Pokemon to understand
-The power that's inside
-
-Pokemon, (gotta catch them all) it's you and me
-I know it's my destiny (Pokemon)
-Oh, you're my best friend
-In a world we must defend
-
-(Pokemon, gotta catch them all) a heart so true
-Our courage will pull us through
-You teach me and I'll teach you
-(Pokemon) gotta catch 'em all
-Gotta catch 'em all
-Yeah
-
-Every challenge along the way
-With courage I will face
-I will battle every day
-To claim my rightful place
-
-Come with me, the time is right
-There's no better team
-Arm-in-arm we'll win the fight
-It's always been our dream
-
-Pokemon (gotta catch them all) it's you and me
-I know it's my destiny (Pokemon)
-Oh, you're my best friend
-In a world we must defend
-
-(Pokemon, gotta catch them all) a heart so true
-Our courage will pull us through
-You teach me and I'll teach you
-(Pokemon) gotta catch 'em all
-Gotta catch 'em all
-Gotta catch 'em all
-Gotta catch 'em all
-Gotta catch 'em all
-Yeah!
-
-Pokemon (gotta catch them all) it's you and me
-I know it's my destiny (Pokemon)
-Oh, you're my best friend
-In a world we must defend
-
-(Pokemon, gotta catch them all) a heart so true
-Our courage will pull us through
-You teach me and I'll teach you
-(Pokemon) gotta catch 'em all
-Gotta catch 'em all
-(Pokemon!)
-
-'''
+# motive = '''
+# I wanna be the very best
+# Like no one ever was
+# To catch them is my real test
+# To train them is my cause
+# 
+# I will travel across the land
+# Searching far and wide
+# Each Pokemon to understand
+# The power that's inside
+# 
+# Pokemon, (gotta catch them all) it's you and me
+# I know it's my destiny (Pokemon)
+# Oh, you're my best friend
+# In a world we must defend
+# 
+# (Pokemon, gotta catch them all) a heart so true
+# Our courage will pull us through
+# You teach me and I'll teach you
+# (Pokemon) gotta catch 'em all
+# Gotta catch 'em all
+# Yeah
+# 
+# Every challenge along the way
+# With courage I will face
+# I will battle every day
+# To claim my rightful place
+# 
+# Come with me, the time is right
+# There's no better team
+# Arm-in-arm we'll win the fight
+# It's always been our dream
+# 
+# Pokemon (gotta catch them all) it's you and me
+# I know it's my destiny (Pokemon)
+# Oh, you're my best friend
+# In a world we must defend
+# 
+# (Pokemon, gotta catch them all) a heart so true
+# Our courage will pull us through
+# You teach me and I'll teach you
+# (Pokemon) gotta catch 'em all
+# Gotta catch 'em all
+# Gotta catch 'em all
+# Gotta catch 'em all
+# Gotta catch 'em all
+# Yeah!
+# 
+# Pokemon (gotta catch them all) it's you and me
+# I know it's my destiny (Pokemon)
+# Oh, you're my best friend
+# In a world we must defend
+# 
+# (Pokemon, gotta catch them all) a heart so true
+# Our courage will pull us through
+# You teach me and I'll teach you
+# (Pokemon) gotta catch 'em all
+# Gotta catch 'em all
+# (Pokemon!)
+# 
+# '''
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

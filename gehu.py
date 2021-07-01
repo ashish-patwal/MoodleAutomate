@@ -1,10 +1,12 @@
+from subprocess import Popen, PIPE
 import requests
 import sys
 
 from context import RequestURL, PostToURL, check_config
 from parser import cmd_parser, write_config
-from const import URL, MAINURL, config, headers, motive
+from const import URL, MAINURL, config, preference, headers, motive, motiveMsg
 from util import calenderEvents, listSubjects, submitAttendance
+from operations import play_video
 
 args = cmd_parser()
 
@@ -16,7 +18,11 @@ def main():
 
     else:
         if args.show_motive:
-            print(motive)
+            p = Popen([preference['player'], motive], stdout=PIPE, stderr=PIPE)
+            stdout, stderr = p.communicate()
+            print()
+            print(motiveMsg)
+            p.wait()
             exit(0)
 
         with requests.Session() as session:
