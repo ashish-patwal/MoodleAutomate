@@ -2,7 +2,11 @@
 
 ## A basic python program to automate moodle platform 
 
-With all due regards this is only a spaghetti code, feel free to add any features you want and modify it . Just give due credits and do mention the original source code so other people can also fork from this .
+A cli tool that helps you to take classes online in the minimalistic way possible . 
+Watch online videos directly streaming to your local media player , take attendance and watch upcoming events without the use of your browser .
+Directly download any resources available on the online platform without opening your browser .
+
+*With all due regards this is only a spaghetti code, feel free to add any features you want and modify it . Just give due credits and do mention the original source code so other people can also fork from this .*
 
 ## Prerequisite :
 
