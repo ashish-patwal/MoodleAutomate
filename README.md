@@ -11,6 +11,9 @@ tabulate
 bs4
 html5lib
 
+**install these libraries using the command given below**
+- python -r requirements.txt
+
 ## BASIC USAGE :
 
 python gehu.py -h ---> Displays help options
@@ -24,6 +27,9 @@ python gehu.py -a / python gehu.py --attendance --> Takes attendance if there is
 python gehu.py -s / python gehu.py --subjects ---> Displays subjects 
 
 python gehu.py -m / python gehu.py --motive ---> Unveils my motive 
+
+## Demo
+*https://user-images.githubusercontent.com/63491234/123659462-5762ad00-d850-11eb-89a7-cdd62828eb82.mp4*
 
 ## Screenshots
 ![Config](/Screenshots/config.png)
