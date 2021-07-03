@@ -1,6 +1,6 @@
 # MOODLE AUTOMATE
 
-## A basic python program to automate moodle platform 
+## A CLI Python program to automate and minimize ease of moodle platform studying 
 
 A cli tool that helps you to take classes online in the minimalistic way possible . 
 Watch online videos directly streaming to your local media player , take attendance and watch upcoming events without the use of your browser .
