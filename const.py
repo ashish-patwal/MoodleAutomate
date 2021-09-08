@@ -48,6 +48,66 @@ API = 'http://45.116.207.79/moodle/lib/ajax/service.php'
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+message_counts_params = {
+        'sesskey': None,
+        'info': 'core_message_get_conversation_counts,core_message_get_unread_conversation_counts'
+        }
+
+message_counts_payload = [{
+    "index" : 0,
+    "methodname" : "core_message_get_conversation_counts",
+    "args" : {
+        "userid": None #my user id 
+    }},
+    {   
+        "index" : 1,
+        "methodname" : "core_message_get_unread_conversation_counts",
+        "args" : {"userid" : None #my user id}
+    }]
+
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+message_conversation_btw_users_params = {
+    'sesskey' : None,
+    'info' : 'core_message_get_conversation_between_users' 
+    }
+
+message_conversation_btw_users_payload = [{
+    "index" : 0,
+    "methodname" : "core_message_get_conversation_between_users",
+    "args" : {
+        "userid" : None #my user id,
+        "otheruserid" : None #other user id,
+        "includecontactrequests" : true,
+        "includeprivacyinfo" : true,
+        "memberlimit" : 0,
+        "memberoffset" : 0,
+        "messagelimit" : 100,
+        "messageoffset" : 0,
+        "newestmessagesfirst" : true}
+    }]
+
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+message_conversation_params = {
+    'sesskey' : None,
+    'info' : 'core_message_get_conversations'
+    }
+
+message_conversation_params = [{
+    "index" : 0,
+    "methodname" : "core_message_get_conversations",
+    "args" : {
+        "userid" : None #other user id <string format>,
+        "type" : null,
+        "limitnum" : 51,
+        "limitfrom" : 0,
+        "favourites" : true,
+        "mergeself" : true}
+    }]
+
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 notification_api_params = {
     'sesskey': None,
     'info': 'core_fetch_notifications'
