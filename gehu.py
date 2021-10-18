@@ -6,24 +6,26 @@ from context import RequestURL, PostToURL, check_config
 from parser import cmd_parser, write_config
 from const import URL, MAINURL, config, preference, headers, motive, motiveMsg
 from util import calenderEvents, listSubjects, submitAttendance
-from operations import play_video
 
 args = cmd_parser()
 
+
 @check_config
 def main():
+    """main function"""
 
     if len(sys.argv) == 1:
         print('Please provide arguments')
 
     else:
         if args.show_motive:
-            p = Popen([preference['player'], motive], stdout=PIPE, stderr=PIPE)
-            stdout, stderr = p.communicate()
+            threadProcess = Popen(
+                [preference['player'], motive], stdout=PIPE, stderr=PIPE)
+            stdout, stderr = threadProcess.communicate()
             print()
             print(motiveMsg)
-            p.wait()
-            exit(0)
+            threadProcess.wait()
+            sys.exit(0)
 
         with requests.Session() as session:
             with RequestURL(URL, session, headers) as soup:
@@ -55,6 +57,7 @@ def main():
 
                     elif args.show_events:
                         calenderEvents(session, headers)
+
 
 if __name__ == '__main__':
     main()

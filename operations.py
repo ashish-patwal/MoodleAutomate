@@ -15,17 +15,19 @@ def play_video(url, session, headers) -> None:
     """Plays the video on media player if it's youtube otherwise on browser."""
     responce = session.get(url, verify=False, headers=headers)
 
-    #load_preference()
+    # load_preference()
 
     if urlparse(responce.url).netloc.find('drive.google.com') != -1:
-        p = Popen([preference['browser'], responce.url], stdout=PIPE, stderr=PIPE)
+        p = Popen([preference['browser'], responce.url],
+                  stdout=PIPE, stderr=PIPE)
         #stdout, stderr = p.communicate()
 
     elif urlparse(responce.url).netloc.find('youtube') != -1:
-        p = Popen([preference['player'], responce.url], stdout=PIPE, stderr=PIPE)
+        p = Popen([preference['player'], responce.url],
+                  stdout=PIPE, stderr=PIPE)
         stdout, stderr = p.communicate()
         p.wait()
-    
+
     else:
         print('Unknown platform used')
 
@@ -36,22 +38,24 @@ def download_resource(url, session, headers) -> None:
     responce = session.get(url, verify=False, headers=headers)
     total = responce.headers.get('content-length')
 
-    filename = os.path.join(preference['download_dir'], os.path.basename(urlparse(responce.url).path))
+    filename = os.path.join(
+        preference['download_dir'], os.path.basename(urlparse(responce.url).path))
 
     with open(filename, 'wb') as file:
 
         if total is None:
             file.write(responce.content)
-        
+
         else:
             downloaded = 0
             total = int(total)
             print('Downloading ... ')
             for data in responce.iter_content(chunk_size=max(int(total/1000), 1024*1024)):
-                downloaded += len(data) 
-                file.write(data) 
+                downloaded += len(data)
+                file.write(data)
                 done = int(50*downloaded/total)
-                sys.stdout.write('\r[{}{}]'.format('█' * done, '.' * (50 - done)))
+                sys.stdout.write('\r[{}{}]'.format(
+                    '█' * done, '.' * (50 - done)))
                 sys.stdout.flush()
 
     sys.stdout.write('\n')

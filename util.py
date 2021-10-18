@@ -1,23 +1,27 @@
-from tabulate import tabulate
-from urllib.parse import urlparse, parse_qs
-from requests import codes
 import json
 import os
 import re
+from requests import codes
+from urllib.parse import urlparse, parse_qs
 import threading
-from operations import play_video, download_resource
+from tabulate import tabulate
 from context import RequestURL, PostToURL, userChoiceError
 from const import API, courses_api_params, courses_api_payload
-from const import payload, MAINURL, CLNDRURL, SUBURL \
-    , VIDEOURL_REG, RESOURCEURL_REG, ATTENDANCEURL_REG, MARKATTENDANCEURL
+from const import payload, MAINURL, CLNDRURL, SUBURL, VIDEOURL_REG, RESOURCEURL_REG, ATTENDANCEURL_REG, MARKATTENDANCEURL
+from operations import play_video
+
 
 def clearScreen() -> None:
     """clears the screen buffer"""
     os.system('clear' if os.name == 'posix' else 'cls')
 
+
 def dateAndTime(soup) -> 'Data':
-    """Function that returns the data of the events like time , date and name of event."""
-    return (''.join(data.get_text().split()) for data in soup.find('div', {'class': 'calendarwrapper'}).find_all('div', class_=re.compile('^row$')))
+    """Function that returns the data of the events like time
+            , date and name of event."""
+    return (''.join(data.get_text().split()) for data in soup.find
+            ('div', {'class': 'calendarwrapper'})
+            .find_all('div', class_=re.compile('^row$')))
 
 
 def Links(soup) -> 'Links':
@@ -163,14 +167,13 @@ def subjectMaterial(session, headers, subId) -> None:
         print(tabulate(printDataList, headers=[
               'S.No', 'Title', 'type'], tablefmt='pretty'))
 
-
         try:
 
             choice = input('Enter choice ( q to exit ): ')
 
             exit(1) if choice == 'q' or choice == 'Q' else print()
 
-            if int(choice) not in range(1,len(printDataList) + 1) or not choice.isdigit(): 
+            if int(choice) not in range(1, len(printDataList) + 1) or not choice.isdigit():
                 print(choice)
                 raise userChoiceError
 
@@ -184,7 +187,6 @@ def subjectMaterial(session, headers, subId) -> None:
                 pass
             else:
                 print('Something new just emerged . Contact the dev .')
-
 
         except userChoiceError:
             print('\nInvalid input. Check your responce.')

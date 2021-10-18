@@ -1,12 +1,14 @@
+from util import clearScreen
+from context import userChoiceError
 import os
 import json
 import argparse
 import sys
 from tabulate import tabulate
 
-from const import MOODLE_HOME, MOODLE_CONFIG, MOODLE_PREFERENCE, config, preference
-from context import userChoiceError
-from util import clearScreen
+from const import MOODLE_HOME, MOODLE_CONFIG, MOODLE_PREFERENCE, \
+    config, preference
+
 
 def configSetter() -> None:
     """Function that sets the config file"""
@@ -21,19 +23,19 @@ def configSetter() -> None:
                [4, 'browser', preference['browser']],
                [5, 'download_dir', preference['download_dir']]]
 
-    print(tabulate(options, headers=['S.No', 'type', 'Cur. Value'], tablefmt='pretty'))
+    print(tabulate(options, headers=[
+          'S.No', 'type', 'Cur. Value'], tablefmt='pretty'))
 
     try:
 
         configValue = None
         choice = input('\nEnter a choice 1 - 5 ( q to quit ): ')
 
-        if choice == 'q' or choice == 'Q':
+        if choice in ('q', 'Q'):
             clearScreen()
             return
 
-        elif int(choice) in range(1,6):
-            configValue = input('\nEnter a new value : ')
+        configValue = input('\nEnter a new value : ')
 
         if choice == '1':
             config['username'] = configValue
@@ -53,7 +55,7 @@ def configSetter() -> None:
                 write_preference()
             else:
                 print('Path does not exist. Give an absolute path .')
-                exit(0)
+                sys.exit(0)
         else:
             raise userChoiceError
 
@@ -76,6 +78,7 @@ def load_config():
             config.update(json.load(f))
     except json.JSONDecodeError:
         write_config()
+
 
 def write_config():
     if not os.path.exists(MOODLE_HOME):
@@ -102,6 +105,7 @@ def write_preference():
 
     with open(MOODLE_PREFERENCE, 'w') as f:
         f.write(json.dumps(preference))
+
 
 def cmd_parser() -> 'argument':
 
@@ -132,6 +136,5 @@ def cmd_parser() -> 'argument':
     if args.config:
         configSetter()
         exit(0)
-
 
     return args
