@@ -19,75 +19,75 @@ def config_setter() -> None:
     load_config()
     load_preference()
 
-    list_options = [
-        ('username', config['username']),
-        ('password', config['password']),
-        ('player', preference['player']),
-        ('browser', preference['browser']),
-        ('download_dir', preference['download_dir']),
-    ]
+    dict_options = {
+        'username': config['username'],
+        'password': config['password'],
+        'player': preference['player'],
+        'browser': preference['browser'],
+        'download_dir': preference['download_dir'],
+    }
+
+    list_options = [[k, v] for k, v in dict_options.items()]
+
+    print(tabulate(list_options, headers=[
+          'type', 'Cur. Value'], tablefmt='pretty'))
+
+    def resolve_value(answer):
+        return f"Current Value : {dict_options[answer['option']]} -> New Value "
+
+    def confirm_value(answer):
+        return f"Confirm < {dict_options[answer['option']]} -> {answer['value']} > "
+
+    def post_validate(answer, current):
+        if current == 'Yes':
+            if answer['option'] in ('username', 'password'):
+                config[answer['option']] = answer['value']
+                write_config()
+                return True
+            elif answer['option'] in ('player', 'browser'):
+                preference[answer['option']] = answer['value']
+                write_preference()
+                return True
+            else:
+                if os.path.exists(answer['value']):
+                    preference['download_dir'] = answer['value']
+                    write_preference()
+                    return True
+                return False
 
     questions = [
         inquirer.List(
             'option',
             message='<< OPTIONS >> ',
-            choices=list_options
-        )
+            choices=dict_options.keys()
+        ),
+        inquirer.Text(
+            'value',
+            message=resolve_value
+        ),
+        inquirer.List(
+            'commit',
+            message=confirm_value,
+            choices=['Yes', 'No'],
+            validate=post_validate,
+            default=False
+        ),
     ]
 
-    anwser = inquirer.prompt(questions, theme=GreenPassion())
-    print(anwser)
+    answer = inquirer.prompt(questions, theme=GreenPassion())
 
-    options = [[1, 'username', config['username']],
-               [2, 'password', config['password']],
-               [3, 'player', preference['player']],
-               [4, 'browser', preference['browser']],
-               [5, 'download_dir', preference['download_dir']]]
+#        else:
+#            raise userChoiceError
 
-    print(tabulate(options, headers=[
-          'S.No', 'type', 'Cur. Value'], tablefmt='pretty'))
+    print('\nConfiguration Saved')
+    input()
+    clear_screen()
 
-    try:
+#    except (userChoiceError, ValueError):
+#        print('\nInvalid input. Check your choice.')
+#        input()
 
-        configValue = None
-        choice = input('\nEnter a choice 1 - 5 ( q to quit ): ')
-
-        if choice in ('q', 'Q'):
-            clear_screen()
-            return
-
-        configValue = input('\nEnter a new value : ')
-
-        if choice == '1':
-            config['username'] = configValue
-            write_config()
-        elif choice == '2':
-            config['password'] = configValue
-            write_config()
-        elif choice == '3':
-            preference['player'] = configValue
-            write_preference()
-        elif choice == '4':
-            preference['browser'] = configValue
-            write_preference()
-        elif choice == '5':
-            if os.path.exists(configValue):
-                preference['download_dir'] = configValue
-                write_preference()
-            else:
-                print('Path does not exist. Give an absolute path .')
-                sys.exit(0)
-        else:
-            raise userChoiceError
-
-        print('\nConfiguration Saved')
-        input()
-
-    except (userChoiceError, ValueError):
-        print('\nInvalid input. Check your choice.')
-        input()
-
-    config_setter()
+#    config_setter()
 
 
 def load_config():
