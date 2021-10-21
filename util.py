@@ -2,16 +2,18 @@ import json
 import os
 import re
 from requests import codes
+import sys
 from urllib.parse import urlparse, parse_qs
 import threading
 from tabulate import tabulate
 from context import RequestURL, PostToURL, userChoiceError
 from const import API, courses_api_params, courses_api_payload
-from const import payload, MAINURL, CLNDRURL, SUBURL, VIDEOURL_REG, RESOURCEURL_REG, ATTENDANCEURL_REG, MARKATTENDANCEURL
+from const import payload, CLNDRURL, SUBURL, VIDEOURL_REG, RESOURCEURL_REG, \
+    ATTENDANCEURL_REG, MARKATTENDANCEURL, MOTIVE, MOTIVE_MSG
 from operations import play_video
 
 
-def clearScreen() -> None:
+def clear_screen() -> None:
     """clears the screen buffer"""
     os.system('clear' if os.name == 'posix' else 'cls')
 
@@ -22,6 +24,14 @@ def dateAndTime(soup) -> 'Data':
     return (''.join(data.get_text().split()) for data in soup.find
             ('div', {'class': 'calendarwrapper'})
             .find_all('div', class_=re.compile('^row$')))
+
+
+def declare_motive() -> None:
+    """Function that declares my motive"""
+    play_video(MOTIVE)
+    print()
+    print(MOTIVE_MSG)
+    sys.exit(0)
 
 
 def Links(soup) -> 'Links':
@@ -96,7 +106,7 @@ def listSubjects(session, headers, sesskey) -> None:
     responce = session.post(API, verify=False, headers=headers,
                             params=courses_api_params, data=json.dumps(courses_api_payload))
 
-    clearScreen()
+    clear_screen()
 
     tab_data = [[counter, row['fullnamedisplay'], row['shortname'], row['id'], row['progress']]
                 for counter, row in enumerate(responce.json()[0]['data']['courses'], 1)]
@@ -162,7 +172,7 @@ def subjectMaterial(session, headers, subId) -> None:
 
         printDataList = typeParser(linksHref, dataList)
 
-        clearScreen()
+        clear_screen()
 
         print(tabulate(printDataList, headers=[
               'S.No', 'Title', 'type'], tablefmt='pretty'))

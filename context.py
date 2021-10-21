@@ -6,9 +6,11 @@ import urllib3
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+
 class userChoiceError(Exception):
     """Raised when choice is in wrong range"""
     pass
+
 
 class RequestURL:
     """Requests the url and returns the soup."""
@@ -52,7 +54,8 @@ def check_config(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         if not config['username'] or not config['password']:
-            print('Provide credentials with python gehu.py --username <YOUR_USERNAME> --password <YOUR_PASSWORD> ')
+            print(
+                'Provide credentials with python gehu.py --username <YOUR_USERNAME> --password <YOUR_PASSWORD> ')
         else:
             return(func(*args, **kwargs))
 
@@ -69,11 +72,13 @@ def check_preference_video(func):
 
     return wrapper
 
+
 def check_preference_downloadDir(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         if not preference['download_dir']:
-            print('Provide preference with python gehu.py --download-dir <PATH TO DOWNLOAD DIRECTORY> ')
+            print(
+                'Provide preference with python gehu.py --download-dir <PATH TO DOWNLOAD DIRECTORY> ')
         else:
             return(func(*args, **kwargs))
 

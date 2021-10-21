@@ -170,8 +170,8 @@ MOODLE_PREFERENCE = os.path.join(MOODLE_HOME, "preference.json")
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-motive = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-motiveMsg = "Sorry but you just got RICKROLLED by the master of mischief !!!"
+MOTIVE = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+MOTIVE_MSG = "Sorry but you just got RICKROLLED by the master of mischief !!!"
 
 # motive = '''
 # I wanna be the very best

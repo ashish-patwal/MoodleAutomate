@@ -1,11 +1,9 @@
-from subprocess import Popen, PIPE
+from util import calenderEvents, listSubjects, submitAttendance, declare_motive
+from const import URL, MAINURL, config, headers
+from parser import cmd_parser, write_config
+from context import RequestURL, PostToURL, check_config
 import requests
 import sys
-
-from context import RequestURL, PostToURL, check_config
-from parser import cmd_parser, write_config
-from const import URL, MAINURL, config, preference, headers, motive, motiveMsg
-from util import calenderEvents, listSubjects, submitAttendance
 
 args = cmd_parser()
 
@@ -19,13 +17,7 @@ def main():
 
     else:
         if args.show_motive:
-            threadProcess = Popen(
-                [preference['player'], motive], stdout=PIPE, stderr=PIPE)
-            stdout, stderr = threadProcess.communicate()
-            print()
-            print(motiveMsg)
-            threadProcess.wait()
-            sys.exit(0)
+            declare_motive()
 
         with requests.Session() as session:
             with RequestURL(URL, session, headers) as soup:

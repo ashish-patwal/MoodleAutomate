@@ -1,21 +1,42 @@
-from util import clearScreen
+from util import clear_screen
 from context import userChoiceError
 import os
 import json
 import argparse
 import sys
 from tabulate import tabulate
+import inquirer
+from inquirer.themes import GreenPassion
 
 from const import MOODLE_HOME, MOODLE_CONFIG, MOODLE_PREFERENCE, \
     config, preference
 
 
-def configSetter() -> None:
+def config_setter() -> None:
     """Function that sets the config file"""
 
-    clearScreen()
+    clear_screen()
     load_config()
     load_preference()
+
+    list_options = [
+        ('username', config['username']),
+        ('password', config['password']),
+        ('player', preference['player']),
+        ('browser', preference['browser']),
+        ('download_dir', preference['download_dir']),
+    ]
+
+    questions = [
+        inquirer.List(
+            'option',
+            message='<< OPTIONS >> ',
+            choices=list_options
+        )
+    ]
+
+    anwser = inquirer.prompt(questions, theme=GreenPassion())
+    print(anwser)
 
     options = [[1, 'username', config['username']],
                [2, 'password', config['password']],
@@ -32,7 +53,7 @@ def configSetter() -> None:
         choice = input('\nEnter a choice 1 - 5 ( q to quit ): ')
 
         if choice in ('q', 'Q'):
-            clearScreen()
+            clear_screen()
             return
 
         configValue = input('\nEnter a new value : ')
@@ -66,7 +87,7 @@ def configSetter() -> None:
         print('\nInvalid input. Check your choice.')
         input()
 
-    configSetter()
+    config_setter()
 
 
 def load_config():
@@ -134,7 +155,7 @@ def cmd_parser() -> 'argument':
     args = parser.parse_args(sys.argv[1:])
 
     if args.config:
-        configSetter()
+        config_setter()
         exit(0)
 
     return args
