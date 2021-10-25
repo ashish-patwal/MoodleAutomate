@@ -1,3 +1,5 @@
+from const import MOODLE_HOME, MOODLE_CONFIG, MOODLE_PREFERENCE, \
+    config, preference
 from util import clear_screen
 from context import userChoiceError
 import os
@@ -7,9 +9,6 @@ import sys
 from tabulate import tabulate
 import inquirer
 from inquirer.themes import GreenPassion
-
-from const import MOODLE_HOME, MOODLE_CONFIG, MOODLE_PREFERENCE, \
-    config, preference
 
 
 def config_setter() -> None:
