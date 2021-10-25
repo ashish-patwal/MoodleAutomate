@@ -10,7 +10,7 @@ from context import RequestURL, PostToURL, userChoiceError
 from const import API, courses_api_params, courses_api_payload
 from const import payload, CLNDRURL, SUBURL, VIDEOURL_REG, RESOURCEURL_REG, \
     ATTENDANCEURL_REG, MARKATTENDANCEURL, MOTIVE, MOTIVE_MSG
-from operations import play_video
+from operations import play_video, download_resource
 
 
 def clear_screen() -> None:
@@ -18,7 +18,7 @@ def clear_screen() -> None:
     os.system('clear' if os.name == 'posix' else 'cls')
 
 
-def dateAndTime(soup) -> 'Data':
+def date_Time(soup) -> 'Data':
     """Function that returns the data of the events like time
             , date and name of event."""
     return (''.join(data.get_text().split()) for data in soup.find
@@ -34,42 +34,43 @@ def declare_motive() -> None:
     sys.exit(0)
 
 
-def Links(soup) -> 'Links':
+def links(soup) -> 'links':
     """Function that returns the links of events for submitting attendance."""
     return (data.attrs['href'] for data in soup.find('div', {'class': 'maincalendar'}).find_all('a', href=re.compile(ATTENDANCEURL_REG)))
 
 
-def submitAttendance(session, headers) -> None:
-    """Submits the attendance for every calender event if submit attendance link is found."""
+def submit_attendance(session, headers) -> None:
+    """Submits the attendance for every calender event
+    if submit attendance link is found."""
     print('Submitting attendance if any in calender')
     print('-'*20)
     with RequestURL(CLNDRURL, session, headers) as soup:
-        for link in Links(soup):
-            threading.Thread(target=markAttendance, args=(
+        for link in links(soup):
+            threading.Thread(target=mark_attendance, args=(
                 link, session, headers)).start()
 
 
-def calenderEvents(session, headers) -> None:
+def calender_events(session, headers) -> None:
     """Shows the calender events"""
     print('Showing upcoming events')
     print('-'*20)
     with RequestURL(CLNDRURL, session, headers) as soup:
 
         try:
-            for counter, event in enumerate(dateAndTime(soup), 1):
+            for counter, event in enumerate(date_Time(soup), 1):
                 print(event)
-                if(counter % 3 == 0):
+                if counter % 3 == 0:
                     print('-'*20)
         except:
             print('No events as of now')
             print('-'*20)
 
 
-def markAttendance(targetURL, session, headers) -> None:
+def mark_attendance(target_url, session, headers) -> None:
     """Function that marks the attendance for every calender event."""
     payload_instance = dict(payload)
 
-    with RequestURL(targetURL, session, headers) as soup:
+    with RequestURL(target_url, session, headers) as soup:
         title = soup.title.string
         try:
             target = soup.find('a', text='Submit attendance')['href']
@@ -84,12 +85,13 @@ def markAttendance(targetURL, session, headers) -> None:
                 payload_instance[k] = ''.join(v)
 
             with RequestURL(target, session, headers) as soup2:
-                presentValue = soup2.find(
+                present_value = soup2.find(
                     'input', {'name': 'status', 'type': 'radio'})['value']
 
-                payload_instance.setdefault('status', presentValue)
+                payload_instance.setdefault('status', present_value)
 
-                with PostToURL(MARKATTENDANCEURL, session, headers, payload_instance) as responce:
+                with PostToURL(MARKATTENDANCEURL, session,
+                               headers, payload_instance) as responce:
                     print(title)
 
                     if responce.status_code == codes['ok']:
@@ -99,20 +101,23 @@ def markAttendance(targetURL, session, headers) -> None:
                     print('-'*20)
 
 
-def listSubjects(session, headers, sesskey) -> None:
+def list_subjects(session, headers, sesskey) -> None:
     """Prints the list of subjects from a json responce object."""
 
     courses_api_params['sesskey'] = sesskey
     responce = session.post(API, verify=False, headers=headers,
-                            params=courses_api_params, data=json.dumps(courses_api_payload))
+                            params=courses_api_params,
+                            data=json.dumps(courses_api_payload))
 
     clear_screen()
 
-    tab_data = [[counter, row['fullnamedisplay'], row['shortname'], row['id'], row['progress']]
-                for counter, row in enumerate(responce.json()[0]['data']['courses'], 1)]
+    tab_data = [[counter, row['fullnamedisplay'], row['shortname'], row['id'],
+                 row['progress']] for counter, row in
+                enumerate(responce.json()[0]['data']['courses'], 1)]
 
     print(tabulate(tab_data, headers=[
-          'S.No', 'Full Name', 'Short Name', 'ID', 'progress'], tablefmt='pretty'))
+          'S.No', 'Full Name', 'Short Name', 'ID', 'progress'],
+        tablefmt='pretty'))
 
     try:
 
@@ -121,7 +126,7 @@ def listSubjects(session, headers, sesskey) -> None:
         if choice not in range(1, len(tab_data) + 1):
             raise userChoiceError
 
-        subjectMaterial(session, headers, tab_data[choice-1][3])
+        subject_material(session, headers, tab_data[choice-1][3])
 
     except (userChoiceError, ValueError):
         print('Invalid input. Check your choice.')
@@ -130,70 +135,77 @@ def listSubjects(session, headers, sesskey) -> None:
         print('value out of index')
 
 
-def titleStringSolver(title) -> 'String':
+def title_string_solver(title) -> 'String':
     """Returns the string after stripping unnecessay data."""
 
-    return ' '.join(title.split()[:-1]) if len(title.split()) > 1 else title.strip()
+    return ' '.join(title.split()[:-1]) if len(title.split()) > 1 \
+        else title.strip()
 
 
-def typeParser(links, material) -> 'List':
+def type_parser(links, material) -> 'List':
     """Returns the list of links paired with their type"""
 
     searcher = re.compile('(' + VIDEOURL_REG + ')' + '|' +
-                          '(' + ATTENDANCEURL_REG + ')' + '|' + '(' + RESOURCEURL_REG + ')')
+                          '(' + ATTENDANCEURL_REG + ')' + '|'
+                          + '(' + RESOURCEURL_REG + ')')
 
-    displayList = []
+    display_list = []
 
     for link, col in zip(links, material):
-        typ = searcher.search(link)
-        video, attendance, resource = typ.groups()
+        type = searcher.search(link)
+        video, attendance, resource = type.groups()
 
         if video:
-            displayList.append([col[0], col[1], 'video'])
+            display_list.append([col[0], col[1], 'video'])
         elif attendance:
-            displayList.append([col[0], col[1], 'attendance'])
+            display_list.append([col[0], col[1], 'attendance'])
         else:
-            displayList.append([col[0], col[1], 'resource'])
+            display_list.append([col[0], col[1], 'resource'])
 
-    return displayList
+    return display_list
 
 
-def subjectMaterial(session, headers, subId) -> None:
+def subject_material(session, headers, sub_id) -> None:
     """Prints the resources for a particular subject."""
 
-    with RequestURL(f'{SUBURL}{subId}', session, headers) as soup:
-        linksData = soup.find_all('a', href=re.compile(
+    with RequestURL(f'{SUBURL}{sub_id}', session, headers) as soup:
+        links_data = soup.find_all('a', href=re.compile(
             VIDEOURL_REG + '|' + ATTENDANCEURL_REG + '|' + RESOURCEURL_REG))
 
-        linksHref = [link.attrs['href'] for link in linksData]
+        links_href = [link.attrs['href'] for link in links_data]
 
-        dataList = [[counter, titleStringSolver(link.get_text()), link.attrs['href']]
-                    for counter, link in enumerate(linksData, 1)]
+        datalist = [[counter, title_string_solver(link.get_text()),
+                     link.attrs['href']]
+                    for counter, link in enumerate(links_data, 1)]
 
-        printDataList = typeParser(linksHref, dataList)
+        print_data_list = type_parser(links_href, datalist)
 
         clear_screen()
 
-        print(tabulate(printDataList, headers=[
+        print(tabulate(print_data_list, headers=[
               'S.No', 'Title', 'type'], tablefmt='pretty'))
 
         try:
 
             choice = input('Enter choice ( q to exit ): ')
 
-            exit(1) if choice == 'q' or choice == 'Q' else print()
+            if choice in ('q', 'Q'):
+                sys.exit(1)
+            else:
+                print()
 
-            if int(choice) not in range(1, len(printDataList) + 1) or not choice.isdigit():
+            if int(choice) not in range(1, len(print_data_list) + 1) or \
+                    not choice.isdigit():
                 print(choice)
                 raise userChoiceError
 
-            baseurl = dataList[int(choice)-1][2]
+            baseurl = datalist[int(choice)-1][2]
 
-            if (printDataList[int(choice)-1][2] == 'resource'):
+            if print_data_list[int(choice)-1][2] == 'resource':
                 download_resource(baseurl, session, headers)
-            elif (printDataList[int(choice)-1][2] == 'video'):
+            elif print_data_list[int(choice)-1][2] == 'video':
                 play_video(baseurl, session, headers)
-            elif (printDataList[int(choice)-1][2] == 'attendance'):
+            elif print_data_list[int(choice)-1][2] == 'attendance':
                 pass
             else:
                 print('Something new just emerged . Contact the dev .')
@@ -204,4 +216,4 @@ def subjectMaterial(session, headers, subId) -> None:
         except IndexError:
             print('value out of index')
 
-        subjectMaterial(session, headers, subId)
+        subject_material(session, headers, sub_id)

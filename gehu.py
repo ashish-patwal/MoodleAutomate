@@ -1,4 +1,4 @@
-from util import calenderEvents, listSubjects, submitAttendance, declare_motive
+from util import calender_events, list_subjects, submit_attendance, declare_motive
 from const import URL, MAINURL, config, headers
 from parser import cmd_parser, write_config
 from context import RequestURL, PostToURL, check_config
@@ -42,13 +42,13 @@ def main():
                         with RequestURL(MAINURL, session, headers) as soup:
                             sesskey = soup.find(
                                 'input', {'name': 'sesskey'})['value']
-                        listSubjects(session, headers, sesskey)
+                        list_subjects(session, headers, sesskey)
 
                     elif args.mark_attendance:
-                        submitAttendance(session, headers)
+                        submit_attendance(session, headers)
 
                     elif args.show_events:
-                        calenderEvents(session, headers)
+                        calender_events(session, headers)
 
 
 if __name__ == '__main__':
