@@ -24,6 +24,7 @@ def config_setter() -> None:
         'player': preference['player'],
         'browser': preference['browser'],
         'download_dir': preference['download_dir'],
+        'video_resolution': preference['video_resolution']
     }
 
     list_options = [[k, v] for k, v in dict_options.items()]
@@ -32,33 +33,37 @@ def config_setter() -> None:
           'type', 'Cur. Value'], tablefmt='pretty'))
 
     def resolve_value(answer):
-        return f"Current Value : {dict_options[answer['option']]} -> New Value "
+        if answer['option'] != 'Exit':
+            return f"Current Value : {dict_options[answer['option']]} -> New Value "
+        clear_screen()
+        sys.exit(0)
 
     def confirm_value(answer):
         return f"Confirm < {dict_options[answer['option']]} -> {answer['value']} > "
 
     def post_validate(answer, current):
+        response = True
         if current == 'Yes':
             if answer['option'] in ('username', 'password'):
                 config[answer['option']] = answer['value']
                 write_config()
-                return True
-            elif answer['option'] in ('player', 'browser'):
+            elif answer['option'] in ('player', 'browser', 'video_resolution'):
                 preference[answer['option']] = answer['value']
                 write_preference()
-                return True
             else:
                 if os.path.exists(answer['value']):
                     preference['download_dir'] = answer['value']
                     write_preference()
-                    return True
-                return False
+                else:
+                    response = False
+
+        return response
 
     questions = [
         inquirer.List(
             'option',
             message='<< OPTIONS >> ',
-            choices=dict_options.keys()
+            choices=[*list(dict_options.keys()), 'Exit']
         ),
         inquirer.Text(
             'value',
@@ -71,9 +76,17 @@ def config_setter() -> None:
             validate=post_validate,
             default=False
         ),
+        inquirer.List(
+            'postExit',
+            message="Edit / Quit ",
+            choices=['Edit', 'Quit']
+        )
     ]
 
     answer = inquirer.prompt(questions, theme=GreenPassion())
+
+    if answer['postExit'] == 'Edit':
+        config_setter()
 
 #        else:
 #            raise userChoiceError
@@ -81,6 +94,7 @@ def config_setter() -> None:
     print('\nConfiguration Saved')
     input()
     clear_screen()
+    sys.exit(0)
 
 #    except (userChoiceError, ValueError):
 #        print('\nInvalid input. Check your choice.')

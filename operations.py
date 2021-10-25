@@ -20,6 +20,12 @@ def play_video(url, session=None, headers=None) -> None:
         responce = requests.get(url)
 
     # load_preference()
+    mpv_args = {
+        "shuffle": "-shuffle",
+        "format": f"--ytdl-format=bestvideo[height<=?{preference['video_resolution']}][fps<=?30]+bestaudio/best[height<={preference['video_resolution']}]",
+        "subLang": "--ytdl-raw-options=sub-lang=en,write-auto-sub=,yes-playlist=",
+        "window": "--force-window=immediate"
+    }
 
     if urlparse(responce.url).netloc.find('drive.google.com') != -1:
         p = Popen([preference['browser'], responce.url],
@@ -27,7 +33,7 @@ def play_video(url, session=None, headers=None) -> None:
         # stdout, stderr = p.communicate()
 
     elif urlparse(responce.url).netloc.find('youtube') != -1:
-        p = Popen([preference['player'], responce.url],
+        p = Popen([preference['player'], mpv_args['format'], mpv_args['subLang'], mpv_args['window'], responce.url],
                   stdout=PIPE, stderr=PIPE)
         stdout, stderr = p.communicate()
         p.wait()

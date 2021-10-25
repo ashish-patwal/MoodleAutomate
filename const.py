@@ -31,12 +31,21 @@ headers = {
 
 config = {"logintoken": None, "username": None, "password": None}
 
-preference = {"player": None, "browser": None, "download_dir": None}
+preference = {"player": 'vlc', "browser": 'chrome',
+              "download_dir": None, "video_resolution": '720'}
 
 payload = {
     "submitbutton": "Save+changes",
     "_qf__mod_attendance_student_attendance_form": "1",
     "mform_isexpanded_id_session": "1",
+}
+
+
+mpv_args = {
+    "shuffle": "shuffle",
+    "format": f"--ytdl-format=bestvideo[height<=?{preference['video_resolution']}][fps<=?30]+bestaudio/best[height<={preference['video_resolution']}]",
+    "subLang": "--ytdl-raw-options=sub-lang=en,write-auto-sub=,yes-playlist=",
+    "window": "--force-wondow=immediate"
 }
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
