@@ -6,10 +6,11 @@ import sys
 from urllib.parse import urlparse, parse_qs
 import threading
 from tabulate import tabulate
-from context import RequestURL, PostToURL, userChoiceError
+from context import RequestURL, PostToURL, UserChoiceError
 from const import API, courses_api_params, courses_api_payload
 from const import payload, CLNDRURL, SUBURL, VIDEOURL_REG, RESOURCEURL_REG, \
-    ATTENDANCEURL_REG, MARKATTENDANCEURL, MOTIVE, MOTIVE_MSG
+    ATTENDANCEURL_REG, MARKATTENDANCEURL, MOTIVE, MOTIVE_MSG, \
+    TOGGLE_COMPLETION, module_completion
 from operations import play_video, download_resource
 
 
@@ -124,11 +125,11 @@ def list_subjects(session, headers, sesskey) -> None:
         choice = int(input('Enter choice : '))
 
         if choice not in range(1, len(tab_data) + 1):
-            raise userChoiceError
+            raise UserChoiceError
 
         subject_material(session, headers, tab_data[choice-1][3])
 
-    except (userChoiceError, ValueError):
+    except (UserChoiceError, ValueError):
         print('Invalid input. Check your choice.')
 
     except IndexError:
@@ -197,7 +198,7 @@ def subject_material(session, headers, sub_id) -> None:
             if int(choice) not in range(1, len(print_data_list) + 1) or \
                     not choice.isdigit():
                 print(choice)
-                raise userChoiceError
+                raise UserChoiceError
 
             baseurl = datalist[int(choice)-1][2]
 
@@ -210,7 +211,7 @@ def subject_material(session, headers, sub_id) -> None:
             else:
                 print('Something new just emerged . Contact the dev .')
 
-        except userChoiceError:
+        except UserChoiceError:
             print('\nInvalid input. Check your responce.')
 
         except IndexError:

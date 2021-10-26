@@ -1,7 +1,7 @@
 from const import MOODLE_HOME, MOODLE_CONFIG, MOODLE_PREFERENCE, \
     config, preference
 from util import clear_screen
-from context import userChoiceError
+from context import UserChoiceError
 import os
 import json
 import argparse

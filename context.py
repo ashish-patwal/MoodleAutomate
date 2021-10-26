@@ -7,8 +7,13 @@ import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
-class userChoiceError(Exception):
+class UserChoiceError(Exception):
     """Raised when choice is in wrong range"""
+    pass
+
+
+class UnplayableStream(Exception):
+    "Raised when mpv/vlc cannot stream the url"
     pass
 
 
