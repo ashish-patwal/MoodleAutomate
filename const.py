@@ -1,5 +1,6 @@
 import os
 import tempfile
+from fake_useragent import UserAgent, FakeUserAgentError
 
 URL = "http://45.116.207.79/moodle/login/index.php"
 
@@ -25,9 +26,19 @@ ATTENDANCEURL = "http://45.116.207.79/moodle/mod/attendance/view.php?id="
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"
-}
+try:
+    User_Agent = UserAgent(
+        fallback='Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML,\
+                like Gecko) Chrome/41.0.2228.0 Safari/537.36')
+
+    headers = {
+        "User-Agent": User_Agent.random
+    }
+
+except FakeUserAgentError:
+    header = {
+        "User-Agent": 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML,\
+                like Gecko) Chrome/41.0.2228.0 Safari/537.36'}
 
 config = {"logintoken": None, "username": None, "password": None}
 

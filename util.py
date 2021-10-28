@@ -127,7 +127,7 @@ def list_subjects(session, headers, sesskey) -> None:
         if choice not in range(1, len(tab_data) + 1):
             raise UserChoiceError
 
-        subject_material(session, headers, tab_data[choice-1][3])
+        subject_material(session, headers, tab_data[choice-1][3], sesskey)
 
     except (UserChoiceError, ValueError):
         print('Invalid input. Check your choice.')
@@ -153,8 +153,8 @@ def type_parser(links, material) -> 'List':
     display_list = []
 
     for link, col in zip(links, material):
-        type = searcher.search(link)
-        video, attendance, resource = type.groups()
+        types = searcher.search(link)
+        video, attendance, resource = types.groups()
 
         if video:
             display_list.append([col[0], col[1], 'video'])
@@ -166,7 +166,17 @@ def type_parser(links, material) -> 'List':
     return display_list
 
 
-def subject_material(session, headers, sub_id) -> None:
+def mark_module_completion(session, headers, query):
+    """check box completed modules / videos / resources / attendance"""
+
+    with PostToURL(TOGGLE_COMPLETION, session, headers, query) as responce:
+        if responce.status_code == codes['ok']:
+            return
+
+        print("Error happend : " + responce.status_code)
+
+
+def subject_material(session, headers, sub_id, sesskey) -> None:
     """Prints the resources for a particular subject."""
 
     with RequestURL(f'{SUBURL}{sub_id}', session, headers) as soup:
@@ -201,6 +211,9 @@ def subject_material(session, headers, sub_id) -> None:
                 raise UserChoiceError
 
             baseurl = datalist[int(choice)-1][2]
+            module_completion['sesskey'] = sesskey
+            module_completion['id'] = baseurl.split("=")[1]
+            mark_module_completion(session, headers, module_completion)
 
             if print_data_list[int(choice)-1][2] == 'resource':
                 download_resource(baseurl, session, headers)
@@ -217,4 +230,4 @@ def subject_material(session, headers, sub_id) -> None:
         except IndexError:
             print('value out of index')
 
-        subject_material(session, headers, sub_id)
+        subject_material(session, headers, sub_id, sesskey)

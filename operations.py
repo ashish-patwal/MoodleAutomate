@@ -5,7 +5,7 @@ import urllib3
 import sys
 import os
 
-from context import check_preference_video, check_preference_downloadDir, \
+from context import check_preference_video, check_preference_download_dir, \
     UnplayableStream
 from const import preference
 
@@ -54,7 +54,7 @@ def play_video(url, session=None, headers=None) -> None:
         sys.exit(1)
 
 
-@check_preference_downloadDir
+@check_preference_download_dir
 def download_resource(url, session, headers) -> None:
     """Downloads the file resource and saves it in current directory."""
     responce = session.get(url, verify=False, headers=headers)

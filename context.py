@@ -56,6 +56,7 @@ class PostToURL:
 
 
 def check_config(func):
+    """checks if the config has username and password defined"""
     @wraps(func)
     def wrapper(*args, **kwargs):
         if not config['username'] or not config['password']:
@@ -68,6 +69,7 @@ def check_config(func):
 
 
 def check_preference_video(func):
+    """checks if the preference has player and browser defined"""
     @wraps(func)
     def wrapper(*args, **kwargs):
         if not preference['player'] or not preference['browser']:
@@ -78,7 +80,8 @@ def check_preference_video(func):
     return wrapper
 
 
-def check_preference_downloadDir(func):
+def check_preference_download_dir(func):
+    """checks if the preference has download directory defined and is valid"""
     @wraps(func)
     def wrapper(*args, **kwargs):
         if not preference['download_dir']:
