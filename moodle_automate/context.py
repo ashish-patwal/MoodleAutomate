@@ -1,7 +1,8 @@
-from const import config, preference
+from gehu.const import config, preference
 
 from bs4 import BeautifulSoup
 from functools import wraps
+import shutil
 import urllib3
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -72,7 +73,8 @@ def check_preference_video(func):
     """checks if the preference has player and browser defined"""
     @wraps(func)
     def wrapper(*args, **kwargs):
-        if not preference['player'] or not preference['browser']:
+        def cmd_exists(x): return shutil.which(x) is not None
+        if not cmd_exists(preference['player']) or not cmd_exists(preference['browser']):
             print('Provide preference with python gehu.py --player <YOUR_PREFERRED_MEDIA_PLAYER> --browser <YOUR_PREFERRED_BROWSER> ')
         else:
             return(func(*args, **kwargs))
