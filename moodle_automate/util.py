@@ -6,12 +6,12 @@ import sys
 from urllib.parse import urlparse, parse_qs
 import threading
 from tabulate import tabulate
-from context import RequestURL, PostToURL, UserChoiceError
-from const import API, courses_api_params, courses_api_payload
-from const import payload, CLNDRURL, SUBURL, VIDEOURL_REG, RESOURCEURL_REG, \
+from moodle_automate.context import RequestURL, PostToURL, UserChoiceError
+from moodle_automate.const import API, courses_api_params, courses_api_payload
+from moodle_automate.const import payload, CLNDRURL, SUBURL, VIDEOURL_REG, RESOURCEURL_REG, \
     ATTENDANCEURL_REG, MARKATTENDANCEURL, MOTIVE, MOTIVE_MSG, \
     TOGGLE_COMPLETION, module_completion
-from operations import play_video, download_resource
+from moodle_automate.operations import play_video, download_resource
 
 
 def clear_screen() -> None:

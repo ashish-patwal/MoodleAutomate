@@ -5,9 +5,9 @@ import urllib3
 import sys
 import os
 
-from context import check_preference_video, check_preference_download_dir, \
+from moodle_automate.context import check_preference_video, check_preference_download_dir, \
     UnplayableStream
-from const import preference
+from moodle_automate.const import preference
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

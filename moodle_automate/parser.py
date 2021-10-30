@@ -1,7 +1,7 @@
-from const import MOODLE_HOME, MOODLE_CONFIG, MOODLE_PREFERENCE, \
+from moodle_automate.const import MOODLE_HOME, MOODLE_CONFIG, MOODLE_PREFERENCE, \
     config, preference
-from util import clear_screen
-from context import UserChoiceError
+from moodle_automate.util import clear_screen
+from moodle_automate.context import UserChoiceError
 import os
 import json
 import argparse

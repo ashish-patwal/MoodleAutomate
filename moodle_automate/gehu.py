@@ -1,7 +1,7 @@
-from util import calender_events, list_subjects, submit_attendance, declare_motive
-from const import URL, MAINURL, config, headers
-from parser import cmd_parser, write_config
-from context import RequestURL, PostToURL, check_config
+from moodle_automate.util import calender_events, list_subjects, submit_attendance, declare_motive
+from moodle_automate.const import URL, MAINURL, config, headers
+from moodle_automate.parser import cmd_parser, write_config
+from moodle_automate.context import RequestURL, PostToURL, check_config
 import requests
 import sys
 
