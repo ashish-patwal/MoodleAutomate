@@ -1,17 +1,17 @@
-import json
 import os
 import re
-from requests import codes
 import sys
-from urllib.parse import urlparse, parse_qs
+import json
 import threading
+from requests import codes
 from tabulate import tabulate
+from urllib.parse import urlparse, parse_qs
+from moodle_automate.operations import play_video, download_resource
 from moodle_automate.context import RequestURL, PostToURL, UserChoiceError
 from moodle_automate.const import API, courses_api_params, courses_api_payload
-from moodle_automate.const import payload, CLNDRURL, SUBURL, VIDEOURL_REG, RESOURCEURL_REG, \
-    ATTENDANCEURL_REG, MARKATTENDANCEURL, MOTIVE, MOTIVE_MSG, \
+from moodle_automate.const import payload, CLNDRURL, SUBURL, VIDEOURL_REG,\
+    RESOURCEURL_REG, ATTENDANCEURL_REG, MARKATTENDANCEURL, MOTIVE, MOTIVE_MSG,\
     TOGGLE_COMPLETION, module_completion
-from moodle_automate.operations import play_video, download_resource
 
 
 def clear_screen() -> None:

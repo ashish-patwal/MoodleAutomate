@@ -1,14 +1,14 @@
-from moodle_automate.const import MOODLE_HOME, MOODLE_CONFIG, MOODLE_PREFERENCE, \
-    config, preference
-from moodle_automate.util import clear_screen
-from moodle_automate.context import UserChoiceError
 import os
+import sys
 import json
 import argparse
-import sys
-from tabulate import tabulate
 import inquirer
+from tabulate import tabulate
 from inquirer.themes import GreenPassion
+from moodle_automate.const import MOODLE_HOME, MOODLE_CONFIG, \
+    MOODLE_PREFERENCE, config, preference
+from moodle_automate.util import clear_screen
+from moodle_automate.context import UserChoiceError
 
 
 def config_setter() -> None:

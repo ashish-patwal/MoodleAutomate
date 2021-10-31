@@ -1,10 +1,9 @@
-from moodle_automate.const import config, preference
-
-from bs4 import BeautifulSoup
-from functools import wraps
+import os
 import shutil
 import urllib3
-import os
+from functools import wraps
+from bs4 import BeautifulSoup
+from moodle_automate.const import config, preference
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

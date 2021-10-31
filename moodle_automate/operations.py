@@ -1,13 +1,13 @@
-import requests
-from subprocess import run, CalledProcessError
-from urllib.parse import urlparse
-import urllib3
-import sys
 import os
+import sys
+import urllib3
+import requests
+from urllib.parse import urlparse
+from subprocess import run, CalledProcessError
 
-from moodle_automate.context import check_preference_video, check_preference_download_dir, \
-    UnplayableStream
 from moodle_automate.const import preference
+from moodle_automate.context import check_preference_video, \
+    check_preference_download_dir, UnplayableStream
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
