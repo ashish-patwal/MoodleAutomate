@@ -29,8 +29,8 @@ def main():
         print('Authenticating with Moodle')
         print('-'*20)
 
-        with PostToURL(URL, session, headers, config) as responce:
-            if responce.url == URL:
+        with PostToURL(URL, session, headers, config) as response:
+            if response.url == URL:
                 print('Wrong Credentials')
                 write_config()
 
