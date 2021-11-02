@@ -29,6 +29,7 @@ def config_setter() -> None:
         "player": preference["player"],
         "browser": preference["browser"],
         "download_dir": preference["download_dir"],
+        "video_download_dir": preference["video_download_dir"],
         "watch_video_resolution": preference["watch_video_resolution"],
         "download_video_resolution": preference["download_video_resolution"],
     }
@@ -62,7 +63,7 @@ def config_setter() -> None:
                 write_preference()
             else:
                 if os.path.exists(answer["value"]):
-                    preference["download_dir"] = answer["value"]
+                    preference[answer["option"]] = answer["value"]
                     write_preference()
                 else:
                     response = False

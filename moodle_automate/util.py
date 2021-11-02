@@ -142,12 +142,10 @@ def modules_download_range_resolver(str):
         else:
             dash_list.append(int(item))
 
-    dash_list = list(dict.fromkeys(dash_list))
-    for i in dash_list:
-        print(type(i))
+    return sorted(list(dict.fromkeys(dash_list)))
 
 
-def list_subjects(session, headers, sesskey, key) -> None:
+def list_subjects(session, headers, sesskey, flagkey) -> None:
     """Prints the list of subjects from a json responce object."""
 
     courses_api_params["sesskey"] = sesskey
@@ -176,16 +174,18 @@ def list_subjects(session, headers, sesskey, key) -> None:
 
     try:
 
-        if key == "list_subjects":
-            choice = int(input("Enter choice : "))
-            if choice not in range(1, len(tab_data) + 1):
-                raise UserChoiceError
+        choice = int(input("Enter choice : "))
+        if choice not in range(1, len(tab_data) + 1):
+            raise UserChoiceError
 
-            subject_material(session, headers, tab_data[choice - 1][3], sesskey)
-
-        elif key == "download_modules":
-            choice = input("Enter modules to download : ")
-            modules_download_range_resolver(choice)
+        subject_material(
+            session,
+            headers,
+            tab_data[choice - 1][3],
+            sesskey,
+            flagkey,
+            tab_data[choice - 1],
+        )
 
     except (UserChoiceError, ValueError):
         print("Invalid input. Check your choice.")
@@ -243,7 +243,15 @@ def mark_module_completion(session, headers, query):
         print("Error happend : " + responce.status_code)
 
 
-def subject_material(session, headers, sub_id, sesskey) -> None:
+def download_modules(range_list, selected_subject_info):
+    """main function to download modules from google drive and youtube"""
+    print(range_list)
+    print(selected_subject_info[1])
+
+
+def subject_material(
+    session, headers, sub_id, sesskey, flagkey, selected_subject_info
+) -> None:
     """Prints the resources for a particular subject."""
 
     with RequestURL(f"{SUBURL}{sub_id}", session, headers) as soup:
@@ -273,38 +281,51 @@ def subject_material(session, headers, sub_id, sesskey) -> None:
 
         try:
 
-            choice = input("Enter choice ( q to exit ): ")
+            if flagkey == "list_subjects":
+                choice = input("Enter choice ( q to exit ): ")
 
-            if choice in ("q", "Q"):
-                sys.exit(1)
-            else:
-                print()
+                if choice in ("q", "Q"):
+                    sys.exit(1)
+                #                else:
+                #                    print()
 
-            if (
-                int(choice) not in range(1, len(print_data_list) + 1)
-                or not choice.isdigit()
-            ):
-                print(choice)
-                raise UserChoiceError
+                if (
+                    int(choice) not in range(1, len(print_data_list) + 1)
+                    or not choice.isdigit()
+                ):
+                    print(choice)
+                    raise UserChoiceError
 
-            baseurl = datalist[int(choice) - 1][2]
-            module_completion["sesskey"] = sesskey
-            module_completion["id"] = baseurl.split("=")[1]
-            mark_module_completion(session, headers, module_completion)
+                baseurl = datalist[int(choice) - 1][2]
+                module_completion["sesskey"] = sesskey
+                module_completion["id"] = baseurl.split("=")[1]
+                mark_module_completion(session, headers, module_completion)
 
-            if print_data_list[int(choice) - 1][2] == "resource":
-                download_resource(baseurl, session, headers)
-            elif print_data_list[int(choice) - 1][2] == "video":
-                play_video(baseurl, session, headers)
-            elif print_data_list[int(choice) - 1][2] == "attendance":
-                pass
-            else:
-                print("Something new just emerged . Contact the dev .")
+                if print_data_list[int(choice) - 1][2] == "resource":
+                    download_resource(baseurl, session, headers)
+                elif print_data_list[int(choice) - 1][2] == "video":
+                    play_video(baseurl, session, headers)
+                elif print_data_list[int(choice) - 1][2] == "attendance":
+                    pass
+                else:
+                    print("Something new just emerged . Contact the dev .")
 
-        except UserChoiceError:
+            elif flagkey == "download_modules":
+                choice = input("Enter modules to download : ")
+                range_list = modules_download_range_resolver(choice)
+
+                if range_list[-1] > len(print_data_list):
+                    raise UserChoiceError
+
+                download_modules(range_list, selected_subject_info)
+
+        except (UserChoiceError, ValueError):
             print("\nInvalid input. Check your responce.")
 
         except IndexError:
             print("value out of index")
 
-        subject_material(session, headers, sub_id, sesskey)
+        input("enter to proceed")
+        subject_material(
+            session, headers, sub_id, sesskey, flagkey, selected_subject_info
+        )

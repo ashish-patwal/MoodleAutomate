@@ -67,6 +67,10 @@ def play_video(url, session=None, headers=None) -> None:
 @check_preference_download_dir
 def download_resource(url, session, headers) -> None:
     """Downloads the file resource and saves it in current directory."""
+
+    if not os.path.exists(preference["download_dir"]):
+        os.mkdir(preference["download_dir"])
+
     responce = session.get(url, verify=False, headers=headers)
     total = responce.headers.get("content-length")
 

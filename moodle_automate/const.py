@@ -3,6 +3,17 @@ import random
 import tempfile
 from moodle_automate.headers import get_random_header
 
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+MOODLE_HOME = os.path.join(os.getenv("HOME", tempfile.gettempdir()), ".moodle")
+
+MOODLE_CONFIG = os.path.join(MOODLE_HOME, "config.json")
+
+MOODLE_PREFERENCE = os.path.join(MOODLE_HOME, "preference.json")
+
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 URL = "http://45.116.207.79/moodle/login/index.php"
 
 MAINURL = "http://45.116.207.79/moodle/my/"
@@ -35,7 +46,8 @@ config = {"logintoken": None, "username": None, "password": None}
 preference = {
     "player": "vlc",
     "browser": "chrome",
-    "download_dir": None,
+    "download_dir": os.path.join(MOODLE_HOME, "downloads"),
+    "video_download_dir": os.path.join(MOODLE_HOME, "videos"),
     "watch_video_resolution": "720",
     "download_video_resolution": "480",
 }
@@ -180,14 +192,6 @@ courses_api_payload = [
         },
     }
 ]
-
-# --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-MOODLE_HOME = os.path.join(os.getenv("HOME", tempfile.gettempdir()), ".moodle")
-
-MOODLE_CONFIG = os.path.join(MOODLE_HOME, "config.json")
-
-MOODLE_PREFERENCE = os.path.join(MOODLE_HOME, "preference.json")
 
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

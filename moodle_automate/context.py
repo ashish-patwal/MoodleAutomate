@@ -98,8 +98,9 @@ def check_preference_download_dir(func):
 
     @wraps(func)
     def wrapper(*args, **kwargs):
-        if preference["download_dir"] is None or not os.path.exists(
-            preference["download_dir"]
+        if (
+            preference["download_dir"] is None
+            or preference["video_download_dir"] is None
         ):
             return "Provide preference with python gehu.py --download-dir <PATH TO DOWNLOAD DIRECTORY> "
 
