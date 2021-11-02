@@ -1,6 +1,9 @@
 import unittest
-from moodle_automate.context import check_config, check_preference_video, \
-    check_preference_download_dir
+from moodle_automate.context import (
+    check_config,
+    check_preference_video,
+    check_preference_download_dir,
+)
 from moodle_automate.parser import load_config, load_preference
 from moodle_automate.const import config, preference
 
@@ -37,17 +40,26 @@ class TestsDecorators(unittest.TestCase):
         res = check_preference_video(self.test_func)
 
         test_false_player_preference = {
-            "player": 'false_player', "browser": 'chrome', "video_resolution": '720'}
+            "player": "false_player",
+            "browser": "chrome",
+            "watch_video_resolution": "720",
+        }
         preference.update(test_false_player_preference)
         self.assertIsInstance(res(), str)
 
         test_false_browser_preference = {
-            "player": 'mpv', "browser": 'false_browser', "video_resolution": '720'}
+            "player": "mpv",
+            "browser": "false_browser",
+            "watch_video_resolution": "720",
+        }
         preference.update(test_false_browser_preference)
         self.assertIsInstance(res(), str)
 
         test_false_resolution_preference = {
-            "player": 'mpv', "browser": 'brave', "video_resolution": '999'}
+            "player": "mpv",
+            "browser": "brave",
+            "watch_video_resolution": "999",
+        }
         preference.update(test_false_resolution_preference)
         self.assertIsInstance(res(), str)
 
@@ -64,20 +76,18 @@ class TestsDecorators(unittest.TestCase):
 
         res = check_preference_download_dir(self.test_func)
 
-        test_empty_path_preference = {
-            "download_dir": None}
+        test_empty_path_preference = {"download_dir": None}
         preference.update(test_empty_path_preference)
         self.assertIsInstance(res(), str)
 
-        test_invalid_path_preference = {
-            "download_dir": '/home/dummy/false_dir/'}
+        test_invalid_path_preference = {"download_dir": "/home/dummy/false_dir/"}
         preference.update(test_invalid_path_preference)
         self.assertIsInstance(res(), str)
 
     def test_preference_download_dir_exists(self):
         """tests results if preference for download dir exists and is a valid path"""
 
-        test_valid_path_preference = {"download_dir": '/home/lucifer/.moodle/'}
+        test_valid_path_preference = {"download_dir": "/home/lucifer/.moodle/"}
         preference.update(test_valid_path_preference)
 
         res = check_preference_download_dir(self.test_func)

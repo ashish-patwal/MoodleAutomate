@@ -10,6 +10,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 class UserChoiceError(Exception):
     """Raised when choice is in wrong range"""
+
     pass
 
 
@@ -26,10 +27,9 @@ class RequestURL:
         self.session = session
         self.headers = headers
 
-    def __enter__(self) -> 'soup':
-        self.html = self.session.get(
-            self.URL, verify=False, headers=self.headers)
-        self.soup = BeautifulSoup(self.html.text, 'html5lib')
+    def __enter__(self) -> "soup":
+        self.html = self.session.get(self.URL, verify=False, headers=self.headers)
+        self.soup = BeautifulSoup(self.html.text, "html5lib")
 
         return self.soup
 
@@ -46,9 +46,10 @@ class PostToURL:
         self.headers = headers
         self.payload = payload
 
-    def __enter__(self) -> 'resp':
+    def __enter__(self) -> "resp":
         self.responce = self.session.post(
-            self.URL, verify=False, headers=self.headers, data=self.payload)
+            self.URL, verify=False, headers=self.headers, data=self.payload
+        )
 
         return self.responce
 
@@ -58,10 +59,11 @@ class PostToURL:
 
 def check_config(func):
     """checks if the config has username and password defined"""
+
     @wraps(func)
     def wrapper(*args, **kwargs):
-        if config['username'] is None or config['password'] is None:
-            return 'Provide credentials with python gehu.py --username <YOUR_USERNAME> --password <YOUR_PASSWORD> '
+        if config["username"] is None or config["password"] is None:
+            return "Provide credentials with python gehu.py --username <YOUR_USERNAME> --password <YOUR_PASSWORD> "
 
         return func(*args, **kwargs)
 
@@ -70,13 +72,21 @@ def check_config(func):
 
 def check_preference_video(func):
     """checks if the preference has player and browser defined"""
-    @ wraps(func)
+
+    @wraps(func)
     def wrapper(*args, **kwargs):
         def cmd_exists(x):
             return shutil.which(x) is not None
 
-        if not cmd_exists(preference['player']) or not cmd_exists(preference['browser']) or preference['video_resolution'] not in ('144', '360', '480', '720', '1080', '1440'):
-            return 'Provide preference with python gehu.py --player <YOUR_PREFERRED_MEDIA_PLAYER> --browser <YOUR_PREFERRED_BROWSER> '
+        if (
+            not cmd_exists(preference["player"])
+            or not cmd_exists(preference["browser"])
+            or preference["watch_video_resolution"]
+            not in ("144", "360", "480", "720", "1080", "1440")
+            or preference["download_video_resolution"]
+            not in ("144", "360", "480", "720", "1080", "1440")
+        ):
+            return "Provide preference with python gehu.py --player <YOUR_PREFERRED_MEDIA_PLAYER> --browser <YOUR_PREFERRED_BROWSER> "
 
         return func(*args, **kwargs)
 
@@ -85,10 +95,13 @@ def check_preference_video(func):
 
 def check_preference_download_dir(func):
     """checks if the preference has download directory defined and is valid"""
-    @ wraps(func)
+
+    @wraps(func)
     def wrapper(*args, **kwargs):
-        if preference['download_dir'] is None or not os.path.exists(preference['download_dir']):
-            return 'Provide preference with python gehu.py --download-dir <PATH TO DOWNLOAD DIRECTORY> '
+        if preference["download_dir"] is None or not os.path.exists(
+            preference["download_dir"]
+        ):
+            return "Provide preference with python gehu.py --download-dir <PATH TO DOWNLOAD DIRECTORY> "
 
         return func(*args, **kwargs)
 

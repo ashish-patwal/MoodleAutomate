@@ -3,11 +3,14 @@ import sys
 import urllib3
 import requests
 from urllib.parse import urlparse
-from subprocess import run, CalledProcessError
+from subprocess import run, Popen, PIPE, CalledProcessError
 
 from moodle_automate.const import preference
-from moodle_automate.context import check_preference_video, \
-    check_preference_download_dir, UnplayableStream
+from moodle_automate.context import (
+    check_preference_video,
+    check_preference_download_dir,
+    UnplayableStream,
+)
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -22,35 +25,42 @@ def play_video(url, session=None, headers=None) -> None:
 
     mpv_args = {
         "shuffle": "-shuffle",
-        "format": f"--ytdl-format=bestvideo[height<=?\
-                {preference['video_resolution']}][fps<=?30]+\
-                bestaudio/best[height<={preference['video_resolution']}]",
+        "format": f"--ytdl-format=bestvideo[height<=?{preference['watch_video_resolution']}][fps<=?30]+bestaudio/best[height<={preference['watch_video_resolution']}]",
         "subLang": "--ytdl-raw-options=sub-lang=en,write-auto-sub=,yes-playlist=",
-        "window": "--force-window=immediate"
+        "window": "--force-window=immediate",
     }
 
     try:
 
-        if urlparse(responce.url).netloc.find('drive.google.com') != -1:
-            run([preference['browser'], responce.url], check=True)
+        if urlparse(responce.url).netloc.find("drive.google.com") != -1:
+            run([preference["browser"], responce.url], check=True)
 
-        elif urlparse(responce.url).netloc.find('youtube') != -1:
-            run([preference['player'], mpv_args['format'], mpv_args['subLang'],
-                mpv_args['window'], responce.url], check=True,
-                capture_output=True)
+        elif urlparse(responce.url).netloc.find("youtube") != -1:
+            run(
+                [
+                    preference["player"],
+                    mpv_args["format"],
+                    mpv_args["subLang"],
+                    mpv_args["window"],
+                    responce.url,
+                ],
+                check=True,
+                capture_output=True,
+            )
 
         else:
-            process = run([preference['player'], responce.url],
-                          check=False, capture_output=False)
+            process = run(
+                [preference["player"], responce.url], check=False, capture_output=False
+            )
             if process.returncode != 0:
                 raise UnplayableStream
 
     except CalledProcessError:
-        print('Some Error with process execution')
+        print("Some Error with process execution")
         sys.exit(1)
 
     except UnplayableStream:
-        print('Stream is unplayable via mpv/vlc on some unknown platform')
+        print("Stream is unplayable via mpv/vlc on some unknown platform")
         sys.exit(1)
 
 
@@ -58,13 +68,13 @@ def play_video(url, session=None, headers=None) -> None:
 def download_resource(url, session, headers) -> None:
     """Downloads the file resource and saves it in current directory."""
     responce = session.get(url, verify=False, headers=headers)
-    total = responce.headers.get('content-length')
+    total = responce.headers.get("content-length")
 
     filename = os.path.join(
-        preference['download_dir'],
-        os.path.basename(urlparse(responce.url).path))
+        preference["download_dir"], os.path.basename(urlparse(responce.url).path)
+    )
 
-    with open(filename, 'wb') as file:
+    with open(filename, "wb") as file:
 
         if total is None:
             file.write(responce.content)
@@ -72,14 +82,14 @@ def download_resource(url, session, headers) -> None:
         else:
             downloaded = 0
             total = int(total)
-            print('Downloading ... ')
-            for data in responce.iter_content(chunk_size=max(int(total/1000),
-                                                             1024*1024)):
+            print("Downloading ... ")
+            for data in responce.iter_content(
+                chunk_size=max(int(total / 1000), 1024 * 1024)
+            ):
                 downloaded += len(data)
                 file.write(data)
-                done = int(50*downloaded/total)
-                sys.stdout.write('\r[{}{}]'.format(
-                    '█' * done, '.' * (50 - done)))
+                done = int(50 * downloaded / total)
+                sys.stdout.write("\r[{}{}]".format("█" * done, "." * (50 - done)))
                 sys.stdout.flush()
 
-    sys.stdout.write('\n')
+    sys.stdout.write("\n")

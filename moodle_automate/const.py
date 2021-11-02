@@ -36,7 +36,8 @@ preference = {
     "player": "vlc",
     "browser": "chrome",
     "download_dir": None,
-    "video_resolution": "720",
+    "watch_video_resolution": "720",
+    "download_video_resolution": "480",
 }
 
 payload = {
@@ -48,7 +49,7 @@ payload = {
 
 mpv_args = {
     "shuffle": "shuffle",
-    "format": f"--ytdl-format=bestvideo[height<=?{preference['video_resolution']}][fps<=?30]+bestaudio/best[height<={preference['video_resolution']}]",
+    "format": f"--ytdl-format=bestvideo[height<=?{preference['watch_video_resolution']}][fps<=?30]+bestaudio/best[height<={preference['watch_video_resolution']}]",
     "subLang": "--ytdl-raw-options=sub-lang=en,write-auto-sub=,yes-playlist=",
     "window": "--force-wondow=immediate",
 }
