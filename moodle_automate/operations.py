@@ -18,6 +18,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 @check_preference_video
 def play_video(url, session=None, headers=None) -> None:
     """Plays the video on media player if it's youtube otherwise on browser."""
+    # TODO: Remove this logic of parsing session and headers for show_motive . Bad Practice .
     if session and headers:
         responce = session.get(url, verify=False, headers=headers)
     else:

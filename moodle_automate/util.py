@@ -42,6 +42,7 @@ def date_Time(soup) -> "Data":
 
 def declare_motive() -> None:
     """Function that declares my motive"""
+    # TODO: Condemm the use of play_video function in operations.py . Get URL with requests .
     play_video(MOTIVE)
     print()
     print(MOTIVE_MSG)
@@ -142,7 +143,7 @@ def modules_download_range_resolver(str):
         else:
             dash_list.append(int(item))
 
-    return sorted(list(dict.fromkeys(dash_list)))
+    return list(dict.fromkeys(dash_list))
 
 
 def list_subjects(session, headers, sesskey, flagkey) -> None:
@@ -242,10 +243,12 @@ def mark_module_completion(session, headers, query):
         print("Error happend : " + responce.status_code)
 
 
-def download_modules(range_list, selected_subject_info):
+def download_modules(range_list, datalist, selected_subject_info):
     """main function to download modules from google drive and youtube"""
-    print(range_list)
-    print(selected_subject_info[1])
+
+    for data in datalist:
+        if data[0] in range_list:
+            print(data)
 
 
 def subject_material(
@@ -322,7 +325,7 @@ def subject_material(
                 if range_list[-1] > len(print_data_list):
                     raise UserChoiceError
 
-                download_modules(range_list, selected_subject_info)
+                download_modules(range_list, datalist, selected_subject_info)
 
         except (UserChoiceError, ValueError):
             print("\nInvalid input. Check your responce.")
