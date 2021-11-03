@@ -11,25 +11,27 @@ class YoutubeDownloader(Utility):
     """
 
     CMD = "youtube-dl"
-    CMD_ARGS = [
-        "-f",
-        f"bestvideo[height<={preference['download_video_resolution']}]+bestaudio/best[height<={preference['download_video_resolution']}]",
-    ]
 
     @staticmethod
-    def download_file_from_youtube(youtube_url, dest_path):
+    def download_file_from_youtube(youtube_url, destination_directory):
         """
         Downloads a video file from youtube to a given folder.
         """
 
-        destination_directory = Utility.destination_exists(dest_path)
+        #        destination_directory = Utility.destination_exists(dest_path)
+        #        print(destination_directory)
+
+        CMD_ARGS = [
+            "-f",
+            f"bestvideo[best[height<={preference['download_video_resolution']}]/height<={preference['download_video_resolution']}]+bestaudio",
+        ]
 
         if exists(destination_directory):
             print("starting process")
             p = subprocess.Popen(
                 [
                     YoutubeDownloader.CMD,
-                    *YoutubeDownloader.CMD_ARGS,
+                    *CMD_ARGS,
                     f"{youtube_url}",
                     "-o",
                     f"{destination_directory}/%(title)s.%(ext)s",
@@ -47,3 +49,6 @@ class YoutubeDownloader(Utility):
             if return_code:
                 print("Something went wrong")
                 sys.exit(1)
+
+        else:
+            print("directory doesn't exist")

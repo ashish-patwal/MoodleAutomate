@@ -8,6 +8,7 @@ from tabulate import tabulate
 from urllib.parse import urlparse, parse_qs
 from moodle_automate.operations import play_video, download_resource
 from moodle_automate.context import RequestURL, PostToURL, UserChoiceError
+from moodle_automate.downloaders.external_downloader import ExternalDownloader
 from moodle_automate.const import API, courses_api_params, courses_api_payload
 from moodle_automate.const import (
     payload,
@@ -243,13 +244,15 @@ def mark_module_completion(session, headers, query):
         print("Error happend : " + responce.status_code)
 
 
-def download_modules(session, headers, range_list, datalist, selected_subject_info):
+def download_modules(session, headers, range_list, datalist, subject_directory):
     """main function to download modules from google drive and youtube"""
+
+    instance = ExternalDownloader(subject_directory.strip())
 
     for data in datalist:
         if data[0] in range_list and data[3] == "video":
             response = session.get(data[2], headers=headers, verify=False)
-            print(response.url)
+            instance.download_video(response.url)
 
 
 def subject_material(
@@ -327,7 +330,7 @@ def subject_material(
                     raise UserChoiceError
 
                 download_modules(
-                    session, headers, range_list, datalist, selected_subject_info
+                    session, headers, range_list, datalist, selected_subject_info[1]
                 )
 
         except (UserChoiceError, ValueError):
