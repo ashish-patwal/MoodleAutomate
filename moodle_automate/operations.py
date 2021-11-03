@@ -84,6 +84,10 @@ def download_resource(url, session, headers, subject_title) -> None:
         subject_directory, os.path.basename(urlparse(responce.url).path)
     )
 
+    if os.path.exists(filename):
+        input("[download] {} already exists . Enter to continue .".format(filename))
+        return
+
     with open(filename, "wb") as file:
 
         if total is None:

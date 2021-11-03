@@ -200,7 +200,7 @@ def title_string_solver(title) -> "String":
     return " ".join(title.split()[:-1]) if len(title.split()) > 1 else title.strip()
 
 
-def type_parser(links, material) -> "List":
+def type_parser(material) -> "List":
     """Returns the list of links paired with their type"""
 
     searcher = re.compile(
@@ -217,20 +217,20 @@ def type_parser(links, material) -> "List":
         + ")"
     )
 
-    display_list = []
-
-    for link, col in zip(links, material):
-        types = searcher.search(link)
+    for data in material:
+        types = searcher.search(data[2])
         video, attendance, resource = types.groups()
 
         if video:
-            display_list.append([col[0], col[1], "video"])
+            data.append("video")
         elif attendance:
-            display_list.append([col[0], col[1], "attendance"])
+            data.append("attendance")
+        elif resource:
+            data.append("resource")
         else:
-            display_list.append([col[0], col[1], "resource"])
+            data.append("None")
 
-    return display_list
+    return material
 
 
 def mark_module_completion(session, headers, query):
@@ -243,12 +243,13 @@ def mark_module_completion(session, headers, query):
         print("Error happend : " + responce.status_code)
 
 
-def download_modules(range_list, datalist, selected_subject_info):
+def download_modules(session, headers, range_list, datalist, selected_subject_info):
     """main function to download modules from google drive and youtube"""
 
     for data in datalist:
-        if data[0] in range_list:
-            print(data)
+        if data[0] in range_list and data[3] == "video":
+            response = session.get(data[2], headers=headers, verify=False)
+            print(response.url)
 
 
 def subject_material(
@@ -268,20 +269,20 @@ def subject_material(
             ),
         )
 
-        links_href = [link.attrs["href"] for link in links_data]
-
         datalist = [
             [counter, title_string_solver(link.get_text()), link.attrs["href"]]
             for counter, link in enumerate(links_data, 1)
         ]
 
-        print_data_list = type_parser(links_href, datalist)
+        datalist = type_parser(datalist)
 
         clear_screen()
 
         print(
             tabulate(
-                print_data_list, headers=["S.No", "Title", "type"], tablefmt="pretty"
+                [[data[0], data[1], data[3]] for data in datalist],
+                headers=["S.No", "Title", "url", "type"],
+                tablefmt="pretty",
             )
         )
 
@@ -296,7 +297,7 @@ def subject_material(
                 #                    print()
 
                 if (
-                    int(choice) not in range(1, len(print_data_list) + 1)
+                    int(choice) not in range(1, len(datalist) + 1)
                     or not choice.isdigit()
                 ):
                     print(choice)
@@ -307,13 +308,13 @@ def subject_material(
                 module_completion["id"] = baseurl.split("=")[1]
                 mark_module_completion(session, headers, module_completion)
 
-                if print_data_list[int(choice) - 1][2] == "resource":
+                if datalist[int(choice) - 1][3] == "resource":
                     download_resource(
                         baseurl, session, headers, selected_subject_info[1]
                     )
-                elif print_data_list[int(choice) - 1][2] == "video":
+                elif datalist[int(choice) - 1][3] == "video":
                     play_video(baseurl, session, headers)
-                elif print_data_list[int(choice) - 1][2] == "attendance":
+                elif datalist[int(choice) - 1][3] == "attendance":
                     pass
                 else:
                     print("Something new just emerged . Contact the dev .")
@@ -322,10 +323,12 @@ def subject_material(
                 range_list = input("Enter modules to download : ")
                 range_list = modules_download_range_resolver(range_list)
 
-                if range_list[-1] > len(print_data_list):
+                if range_list[-1] > len(datalist):
                     raise UserChoiceError
 
-                download_modules(range_list, datalist, selected_subject_info)
+                download_modules(
+                    session, headers, range_list, datalist, selected_subject_info
+                )
 
         except (UserChoiceError, ValueError):
             print("\nInvalid input. Check your responce.")
