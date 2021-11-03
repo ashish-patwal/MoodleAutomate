@@ -181,10 +181,9 @@ def list_subjects(session, headers, sesskey, flagkey) -> None:
         subject_material(
             session,
             headers,
-            tab_data[choice - 1][3],
+            tab_data[choice - 1],
             sesskey,
             flagkey,
-            tab_data[choice - 1],
         )
 
     except (UserChoiceError, ValueError):
@@ -250,11 +249,15 @@ def download_modules(range_list, selected_subject_info):
 
 
 def subject_material(
-    session, headers, sub_id, sesskey, flagkey, selected_subject_info
+    session,
+    headers,
+    selected_subject_info,
+    sesskey,
+    flagkey,
 ) -> None:
     """Prints the resources for a particular subject."""
 
-    with RequestURL(f"{SUBURL}{sub_id}", session, headers) as soup:
+    with RequestURL(f"{SUBURL}{selected_subject_info[3]}", session, headers) as soup:
         links_data = soup.find_all(
             "a",
             href=re.compile(
@@ -302,7 +305,9 @@ def subject_material(
                 mark_module_completion(session, headers, module_completion)
 
                 if print_data_list[int(choice) - 1][2] == "resource":
-                    download_resource(baseurl, session, headers)
+                    download_resource(
+                        baseurl, session, headers, selected_subject_info[1]
+                    )
                 elif print_data_list[int(choice) - 1][2] == "video":
                     play_video(baseurl, session, headers)
                 elif print_data_list[int(choice) - 1][2] == "attendance":
@@ -311,8 +316,8 @@ def subject_material(
                     print("Something new just emerged . Contact the dev .")
 
             elif flagkey == "download_modules":
-                choice = input("Enter modules to download : ")
-                range_list = modules_download_range_resolver(choice)
+                range_list = input("Enter modules to download : ")
+                range_list = modules_download_range_resolver(range_list)
 
                 if range_list[-1] > len(print_data_list):
                     raise UserChoiceError
@@ -326,6 +331,4 @@ def subject_material(
             print("value out of index")
 
         input("enter to proceed")
-        subject_material(
-            session, headers, sub_id, sesskey, flagkey, selected_subject_info
-        )
+        subject_material(session, headers, selected_subject_info, sesskey, flagkey)

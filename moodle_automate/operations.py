@@ -65,17 +65,22 @@ def play_video(url, session=None, headers=None) -> None:
 
 
 @check_preference_download_dir
-def download_resource(url, session, headers) -> None:
+def download_resource(url, session, headers, subject_title) -> None:
     """Downloads the file resource and saves it in current directory."""
 
     if not os.path.exists(preference["download_dir"]):
         os.mkdir(preference["download_dir"])
 
+    subject_directory = os.path.join(preference["download_dir"], subject_title)
+
+    if not os.path.exists(subject_directory):
+        os.mkdir(subject_directory)
+
     responce = session.get(url, verify=False, headers=headers)
     total = responce.headers.get("content-length")
 
     filename = os.path.join(
-        preference["download_dir"], os.path.basename(urlparse(responce.url).path)
+        subject_directory, os.path.basename(urlparse(responce.url).path)
     )
 
     with open(filename, "wb") as file:
