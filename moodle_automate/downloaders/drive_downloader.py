@@ -55,19 +55,24 @@ class GoogleDriveDownloader(Utility):
             print()
             # print("Done.")
 
-    #            if unzip:
-    #                try:
-    #                    print("Unzipping...", end="")
-    #                    stdout.flush()
-    #                    with zipfile.ZipFile(dest_path, "r") as z:
-    #                        z.extractall(destination_directory)
-    #                    print("Done.")
-    #                except zipfile.BadZipfile:
-    #                    warnings.warn(
-    #                        'Ignoring `unzip` since "{}" does not look like a valid zip file'.format(
-    #                            file_id
-    #                        )
-    #                    )
+        #            if unzip:
+        #                try:
+        #                    print("Unzipping...", end="")
+        #                    stdout.flush()
+        #                    with zipfile.ZipFile(dest_path, "r") as z:
+        #                        z.extractall(destination_directory)
+        #                    print("Done.")
+        #                except zipfile.BadZipfile:
+        #                    warnings.warn(
+        #                        'Ignoring `unzip` since "{}" does not look like a valid zip file'.format(
+        #                            file_id
+        #                        )
+        #                    )
+        elif exists(dest_path):
+            print(
+                "[download] Destination: {} already exists and merged".format(dest_path)
+            )
+            stdout.flush()
 
     @staticmethod
     def _get_file_id(URL):
