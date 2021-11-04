@@ -253,6 +253,8 @@ def download_modules(session, headers, range_list, datalist, subject_directory):
         if data[0] in range_list and data[3] == "video":
             response = session.get(data[2], headers=headers, verify=False)
             instance.download_video(response.url)
+            print("-" * 20)
+            sys.stdout.flush()
 
 
 def subject_material(

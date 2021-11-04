@@ -27,7 +27,6 @@ class YoutubeDownloader(Utility):
         ]
 
         if exists(destination_directory):
-            print("starting process")
             p = subprocess.Popen(
                 [
                     YoutubeDownloader.CMD,
@@ -36,13 +35,15 @@ class YoutubeDownloader(Utility):
                     "-o",
                     f"{destination_directory}/%(title)s.%(ext)s",
                 ],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
             )
 
-            for line in iter(p.stdout.readline, b""):
-                sys.stdout.buffer.write(line)
-                sys.stdout.flush()
+            stdout = p.communicate()
+
+            # TODO: Consider alternatives to reduce bottlenecks in stdout buffers (p.communicate())
+
+            #            for line in iter(p.stdout.readline, b""):
+            #                sys.stdout.buffer.write(line)
+            #                sys.stdout.flush()
 
             return_code = p.wait()
 
