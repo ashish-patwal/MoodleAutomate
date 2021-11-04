@@ -1,5 +1,5 @@
 from os import makedirs
-from sys import stdout
+from sys import stdout, exit
 from os.path import exists, join
 from urllib.parse import urlparse
 from moodle_automate.const import preference
@@ -22,7 +22,7 @@ class ExternalDownloader(GDD, YD):
         """Main function to download videos"""
 
         if urlparse(URL).netloc.find("drive.google.com") != -1:
-            print("downloading {}".format(URL))
+            GDD.download_file_from_google_drive(URL, self.abs_path)
 
         elif urlparse(URL).netloc.find("youtube") != -1:
             YD.download_file_from_youtube(URL, self.abs_path)

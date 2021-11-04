@@ -2,8 +2,11 @@ import requests
 import zipfile
 import warnings
 from sys import stdout
-from os.path import exists
+from re import search, error
+from os.path import exists, join
+from urllib.parse import urlparse
 from moodle_automate.downloaders.utility import Utility
+from moodle_automate.context import RequestURL
 
 
 class GoogleDriveDownloader(Utility):
@@ -15,14 +18,14 @@ class GoogleDriveDownloader(Utility):
     DOWNLOAD_URL = "https://docs.google.com/uc?export=download"
 
     @staticmethod
-    def download_file_from_google_drive(
-        file_id, dest_path, overwrite=False, showsize=True
-    ):
+    def download_file_from_google_drive(URL, dest_path, overwrite=False, showsize=True):
         """
         Downloads a shared file from google drive into a given folder.
         """
 
-        destination_directory = Utility.destination_exists(dest_path)
+        file_title = GoogleDriveDownloader._get_file_title(URL)
+        file_id = GoogleDriveDownloader._get_file_id(URL)
+        dest_path = join(dest_path, file_title)
 
         if not exists(dest_path) or overwrite:
 
@@ -65,6 +68,25 @@ class GoogleDriveDownloader(Utility):
     #                            file_id
     #                        )
     #                    )
+
+    @staticmethod
+    def _get_file_id(URL):
+        try:
+            match = search(r"^/file/d/(.+)/view$", urlparse(URL).path)
+            if match is not None:
+                return match.group(1)
+        except error:
+            print("Regex Error !!")
+            exit(1)
+
+    @staticmethod
+    def _get_file_title(URL):
+        with RequestURL(URL=URL) as soup:
+            file_title = soup.find("meta", attrs={"property": "og:title"}).attrs[
+                "content"
+            ]
+
+            return file_title
 
     @staticmethod
     def _get_confirm_token(response):

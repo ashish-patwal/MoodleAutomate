@@ -341,5 +341,5 @@ def subject_material(
         except IndexError:
             print("value out of index")
 
-        input("enter to proceed")
+        # TODO: Addition of Quit statement and backspace for previous page
         subject_material(session, headers, selected_subject_info, sesskey, flagkey)

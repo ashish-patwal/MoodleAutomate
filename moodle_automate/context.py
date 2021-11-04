@@ -1,9 +1,11 @@
 import os
 import shutil
 import urllib3
+from requests.sessions import Session
 from functools import wraps
 from bs4 import BeautifulSoup
 from moodle_automate.const import config, preference
+from moodle_automate.const import get_random_header
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -22,16 +24,16 @@ class UnplayableStream(Exception):
 class RequestURL:
     """Requests the url and returns the soup."""
 
-    def __init__(self, URL, session, headers) -> None:
+    def __init__(self, URL, session=Session(), headers=get_random_header()) -> None:
         self.URL = URL
         self.session = session
         self.headers = headers
 
     def __enter__(self) -> "soup":
-        self.html = self.session.get(self.URL, verify=False, headers=self.headers)
-        self.soup = BeautifulSoup(self.html.text, "html5lib")
+        html = self.session.get(self.URL, verify=False, headers=self.headers)
+        soup = BeautifulSoup(html.text, "html5lib")
 
-        return self.soup
+        return soup
 
     def __exit__(self, exec_type, exec_value, exec_trace) -> None:
         pass
