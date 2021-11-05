@@ -1,6 +1,6 @@
 import sys
 import requests
-from moodle_automate.parser import cmd_parser, write_config
+from moodle_automate.parser import cmd_parser
 from moodle_automate.const import URL, MAINURL, config, headers
 from moodle_automate.context import RequestURL, PostToURL, check_config
 from moodle_automate.util import (
@@ -26,21 +26,16 @@ def login(cur_session):
     with RequestURL(URL, cur_session, headers) as soup:
         config["logintoken"] = soup.find("input", {"name": "logintoken"})["value"]
 
-    print()
-    print("-" * 40)
-    print("Authenticating with Moodle")
-    print("-" * 40)
+    print("\nAuthenticating with Moodle...")
 
     with PostToURL(URL, cur_session, headers, config) as response:
         if response.url == URL:
-            print("Wrong Credentials")
-            write_config()
+            print("Wrong Credentials... Exiting...")
+            sys.exit(1)
 
         else:
             headers.update(cur_session.cookies.get_dict())
-            print("-" * 40)
-            print("updated cookies for moodle session")
-            print("-" * 40)
+            print("updated cookies for moodle session...")
 
     return cur_session
 
@@ -49,13 +44,9 @@ def login(cur_session):
 def main():
     """main function"""
 
-    if len(sys.argv) == 1:
-        print("Please provide arguments")
-        sys.exit(1)
-
-    else:
-        if args.show_motive:
-            declare_motive()
+    if args.show_motive:
+        declare_motive()
+        sys.exit(0)
 
     with requests.Session() as session:
         updated_session = login(session)
@@ -65,12 +56,6 @@ def main():
                 updated_session, headers, get_sesskey(updated_session), "list_subjects"
             )
 
-        elif args.mark_attendance:
-            submit_attendance(updated_session, headers)
-
-        elif args.show_events:
-            calender_events(updated_session, headers)
-
         elif args.download_modules:
             list_subjects(
                 updated_session,
@@ -78,6 +63,12 @@ def main():
                 get_sesskey(updated_session),
                 "download_modules",
             )
+
+        elif args.mark_attendance:
+            submit_attendance(updated_session, headers)
+
+        elif args.show_events:
+            calender_events(updated_session, headers)
 
 
 if __name__ == "__main__":

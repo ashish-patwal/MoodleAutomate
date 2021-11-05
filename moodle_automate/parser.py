@@ -13,7 +13,16 @@ from moodle_automate.const import (
     preference,
 )
 from moodle_automate.util import clear_screen
-from moodle_automate.context import UserChoiceError
+
+
+class Parser(argparse.ArgumentParser):
+    """Extend functionality of ArgumentParser"""
+
+    def error(self, message):
+        sys.stderr.write("error: %s\n\n" % message)
+        sys.stderr.flush()
+        self.print_help()
+        sys.exit(2)
 
 
 def config_setter() -> None:
@@ -89,23 +98,13 @@ def config_setter() -> None:
 
     answer = inquirer.prompt(questions, theme=GreenPassion())
 
-    if answer["postExit"] == "Edit":
+    if answer and answer["postExit"] == "Edit":
         config_setter()
 
-    #        else:
-    #            raise userChoiceError
-
-    print("\nConfiguration Saved")
+    print("\nConfiguration Saved... Enter to continue...")
     input()
     clear_screen()
     sys.exit(0)
-
-
-#    except (userChoiceError, ValueError):
-#        print('\nInvalid input. Check your choice.')
-#        input()
-
-#    config_setter()
 
 
 def load_config():
@@ -146,19 +145,13 @@ def write_preference():
         f.write(json.dumps(preference))
 
 
-def cmd_parser() -> "argument":
+def cmd_parser() -> argparse.Namespace:
+    """Parses the command line arguments."""
 
     load_config()
     load_preference()
 
-    """Parses the command line arguments."""
-    parser = argparse.ArgumentParser(
-        """
-
-    MOODLE AUTOMATOR
-
-    """
-    )
+    parser = Parser(description="Automates Moodle platform")
     group = parser.add_mutually_exclusive_group()
 
     group.add_argument(
@@ -206,8 +199,12 @@ def cmd_parser() -> "argument":
 
     args = parser.parse_args(sys.argv[1:])
 
+    if len(sys.argv) == 1:
+        parser.print_help()
+        sys.exit(1)
+
     if args.config:
         config_setter()
-        exit(0)
+        sys.exit(0)
 
     return args

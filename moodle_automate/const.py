@@ -1,5 +1,4 @@
 import os
-import random
 import tempfile
 from moodle_automate.headers import get_random_header
 
