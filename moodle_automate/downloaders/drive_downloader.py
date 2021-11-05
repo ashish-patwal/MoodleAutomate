@@ -1,6 +1,4 @@
 import requests
-import zipfile
-import warnings
 from sys import stdout
 from re import search, error
 from os.path import exists, join
@@ -23,8 +21,8 @@ class GoogleDriveDownloader(Utility):
         Downloads a shared file from google drive into a given folder.
         """
 
-        file_title = GoogleDriveDownloader._get_file_title(URL)
-        file_id = GoogleDriveDownloader._get_file_id(URL)
+        file_title = GoogleDriveDownloader.get_file_title(URL)
+        file_id = GoogleDriveDownloader.get_file_id(URL)
         dest_path = join(dest_path, file_title)
 
         if not exists(dest_path) or overwrite:
@@ -38,7 +36,7 @@ class GoogleDriveDownloader(Utility):
                 GoogleDriveDownloader.DOWNLOAD_URL, params={"id": file_id}, stream=True
             )
 
-            token = GoogleDriveDownloader._get_confirm_token(response)
+            token = GoogleDriveDownloader.get_confirm_token(response)
             if token:
                 params = {"id": file_id, "confirm": token}
                 response = session.get(
@@ -53,21 +51,7 @@ class GoogleDriveDownloader(Utility):
                 response, dest_path, showsize, current_download_size
             )
             print()
-            # print("Done.")
 
-        #            if unzip:
-        #                try:
-        #                    print("Unzipping...", end="")
-        #                    stdout.flush()
-        #                    with zipfile.ZipFile(dest_path, "r") as z:
-        #                        z.extractall(destination_directory)
-        #                    print("Done.")
-        #                except zipfile.BadZipfile:
-        #                    warnings.warn(
-        #                        'Ignoring `unzip` since "{}" does not look like a valid zip file'.format(
-        #                            file_id
-        #                        )
-        #                    )
         elif exists(dest_path):
             print(
                 "[download] Destination: {} already exists and merged".format(dest_path)
@@ -75,7 +59,7 @@ class GoogleDriveDownloader(Utility):
             stdout.flush()
 
     @staticmethod
-    def _get_file_id(URL):
+    def get_file_id(URL):
         try:
             match = search(r"^/file/d/(.+)/view$", urlparse(URL).path)
             if match is not None:
@@ -85,7 +69,7 @@ class GoogleDriveDownloader(Utility):
             exit(1)
 
     @staticmethod
-    def _get_file_title(URL):
+    def get_file_title(URL):
         with RequestURL(URL=URL) as soup:
             file_title = soup.find("meta", attrs={"property": "og:title"}).attrs[
                 "content"
@@ -94,7 +78,7 @@ class GoogleDriveDownloader(Utility):
             return file_title
 
     @staticmethod
-    def _get_confirm_token(response):
+    def get_confirm_token(response):
         for key, value in response.cookies.items():
             if key.startswith("download_warning"):
                 return value

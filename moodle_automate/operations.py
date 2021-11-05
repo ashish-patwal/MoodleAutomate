@@ -6,6 +6,7 @@ from urllib.parse import urlparse
 from subprocess import run, Popen, PIPE, CalledProcessError
 
 from moodle_automate.const import preference
+from moodle_automate.downloaders.drive_downloader import GoogleDriveDownloader as GDD
 from moodle_automate.context import (
     check_preference_video,
     check_preference_download_dir,
@@ -34,7 +35,28 @@ def play_video(url, session=None, headers=None) -> None:
     try:
 
         if urlparse(responce.url).netloc.find("drive.google.com") != -1:
-            run([preference["browser"], responce.url], check=True)
+            sess = requests.Session()
+            file_id = GDD.get_file_id(responce.url)
+            drive_video = sess.get(
+                GDD.DOWNLOAD_URL, params={"id": file_id}, stream=True
+            )
+            token = GDD.get_confirm_token(drive_video)
+
+            if token:
+                params = {"id": file_id, "confirm": token}
+                drive_video = sess.get(GDD.DOWNLOAD_URL, params=params, stream=True)
+
+            run(
+                [
+                    preference["player"],
+                    mpv_args["format"],
+                    mpv_args["subLang"],
+                    mpv_args["window"],
+                    drive_video.url,
+                ],
+                check=True,
+                capture_output=True,
+            )
 
         elif urlparse(responce.url).netloc.find("youtube") != -1:
             run(
