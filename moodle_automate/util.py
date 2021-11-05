@@ -250,11 +250,18 @@ def download_modules(session, headers, range_list, datalist, subject_directory):
     instance = ExternalDownloader(subject_directory.strip())
 
     for data in datalist:
-        if data[0] in range_list and data[3] == "video":
-            response = session.get(data[2], headers=headers, verify=False)
-            instance.download_video(response.url)
-            print("-" * 20)
-            sys.stdout.flush()
+        if data[0] in range_list:
+            if data[3] == "video":
+                response = session.get(data[2], headers=headers, verify=False)
+                instance.download_video(response.url)
+                print("-" * 20)
+                sys.stdout.flush()
+            elif data[3] == "resource":
+                download_resource(data[2], session, headers, subject_directory)
+                print("-" * 20)
+                sys.stdout.flush()
+
+    input("press any key to continue")
 
 
 def subject_material(
@@ -325,7 +332,12 @@ def subject_material(
                     print("Something new just emerged . Contact the dev .")
 
             elif flagkey == "download_modules":
-                range_list = input("Enter modules to download : ")
+                range_list = input("Enter modules to download [q to quit]: ")
+
+                if range_list == "q":
+                    clear_screen()
+                    sys.exit(0)
+
                 range_list = modules_download_range_resolver(range_list)
 
                 if range_list[-1] > len(datalist):
