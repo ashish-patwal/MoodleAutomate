@@ -36,12 +36,18 @@ def play_video(url, session=None, headers=None) -> None:
 
         if urlparse(responce.url).netloc.find("drive.google.com") != -1:
             sess = requests.Session()
+
+            file_title = GDD.get_file_title(responce.url)
+
+            if not file_title.endswith((".mp4", ".mkv", ".webm")):
+                raise UnplayableStream
+
             file_id = GDD.get_file_id(responce.url)
             drive_video = sess.get(
                 GDD.DOWNLOAD_URL, params={"id": file_id}, stream=True
             )
-            token = GDD.get_confirm_token(drive_video)
 
+            token = GDD.get_confirm_token(drive_video)
             if token:
                 params = {"id": file_id, "confirm": token}
                 drive_video = sess.get(GDD.DOWNLOAD_URL, params=params, stream=True)

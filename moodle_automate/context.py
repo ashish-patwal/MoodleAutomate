@@ -1,8 +1,8 @@
-import os
 import shutil
 import urllib3
-from requests.sessions import Session
+from os.path import exists
 from functools import wraps
+from requests.sessions import Session
 from bs4 import BeautifulSoup
 from moodle_automate.const import config, preference
 from moodle_automate.const import get_random_header
@@ -103,6 +103,8 @@ def check_preference_download_dir(func):
         if (
             preference["download_dir"] is None
             or preference["video_download_dir"] is None
+            or not exists(preference["download_dir"])
+            or not exists(preference["video_download_dir"])
         ):
             return "Provide preference with python gehu.py --download-dir <PATH TO DOWNLOAD DIRECTORY> "
 
