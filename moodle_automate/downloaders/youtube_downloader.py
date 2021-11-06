@@ -1,6 +1,7 @@
 import sys
 import subprocess
 from os.path import exists
+
 from moodle_automate.downloaders.utility import Utility
 from moodle_automate.const import preference
 

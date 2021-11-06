@@ -1,5 +1,6 @@
 import os
 import tempfile
+
 from moodle_automate.headers import get_random_header
 
 # pylint: disable=W1401

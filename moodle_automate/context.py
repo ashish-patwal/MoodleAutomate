@@ -2,8 +2,9 @@ import shutil
 import urllib3
 from os.path import exists
 from functools import wraps
-from requests.sessions import Session
 from bs4 import BeautifulSoup
+from requests.sessions import Session
+
 from moodle_automate.const import config, preference
 from moodle_automate.const import get_random_header
 
@@ -79,7 +80,7 @@ def check_config(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         if config["username"] is None or config["password"] is None:
-            return "Provide credentials with python gehu.py --username <YOUR_USERNAME> --password <YOUR_PASSWORD> "
+            return "Please update username / password..."
 
         return func(*args, **kwargs)
 
@@ -94,15 +95,27 @@ def check_preference_video(func):
         def cmd_exists(cmd):
             return shutil.which(cmd) is not None
 
-        if (
-            not cmd_exists(preference["player"])
-            or not cmd_exists(preference["browser"])
-            or preference["watch_video_resolution"]
-            not in ("144", "360", "480", "720", "1080", "1440")
-            or preference["download_video_resolution"]
-            not in ("144", "360", "480", "720", "1080", "1440")
+        if not cmd_exists(preference["player"]) or not cmd_exists(
+            preference["browser"]
         ):
-            return "Provide preference with python gehu.py --player <YOUR_PREFERRED_MEDIA_PLAYER> --browser <YOUR_PREFERRED_BROWSER> "
+            return "Please update player / browser..."
+
+        if preference["watch_video_resolution"] not in (
+            "144",
+            "360",
+            "480",
+            "720",
+            "1080",
+            "1440",
+        ) or preference["download_video_resolution"] not in (
+            "144",
+            "360",
+            "480",
+            "720",
+            "1080",
+            "1440",
+        ):
+            return "Please use correct resolution 144/ 360/ 480/ 720/ 1080..."
 
         return func(*args, **kwargs)
 
@@ -120,7 +133,7 @@ def check_preference_download_dir(func):
             or not exists(preference["download_dir"])
             or not exists(preference["video_download_dir"])
         ):
-            return "Provide preference with python gehu.py --download-dir <PATH TO DOWNLOAD DIRECTORY> "
+            return "Please update download_dir / video_download_dir location..."
 
         return func(*args, **kwargs)
 

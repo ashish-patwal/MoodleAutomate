@@ -1,6 +1,6 @@
 import sys
 import requests
-from re import search, errr
+from re import search, error
 from os.path import exists, join
 from urllib.parse import urlparse
 

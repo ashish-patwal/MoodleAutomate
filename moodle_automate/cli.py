@@ -1,5 +1,6 @@
 import sys
 import requests
+
 from moodle_automate.parser import cmd_parser
 from moodle_automate.const import URL, MAINURL, config, headers
 from moodle_automate.context import (
