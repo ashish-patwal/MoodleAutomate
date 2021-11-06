@@ -1,16 +1,17 @@
 from setuptools import setup, find_packages
-import io
-import re
+
+# import io
+# import re
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-with io.open("moodle_automate/__version__.py", "rt", encoding="utf8") as fh:
-    version = re.search(r"__version__ = \"(.*?)\"", fh.read()).group(1)
+# with io.open("moodle_automate/__version__.py", "rt", encoding="utf8") as fh:
+#    version = re.search(r"__version__ = \"(.*?)\"", fh.read()).group(1)
 
 setup(
     name="moodle_automate",
-    version=version,
+    version="1.0.1",
     author="Ashish Patwal",
     author_email="ashishpatwal147@gmail.com",
     description="A python program to automate Moodle Platform",
@@ -29,6 +30,6 @@ setup(
     python_requires=">=3.9.7",
     entry_points="""
     [console_scripts]
-    moodle=moodle_automate.cli
+    moodle=moodle_automate.cli:main
     """,
 )

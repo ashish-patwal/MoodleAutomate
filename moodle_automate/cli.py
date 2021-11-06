@@ -45,8 +45,8 @@ def login(cur_session):
 
 
 @check_config
-def main():
-    """main function"""
+def cli():
+    """cli function"""
 
     if args.show_motive:
         declare_motive()
@@ -79,5 +79,9 @@ def main():
             calender_events(updated_session, headers)
 
 
-if __name__ == "__main__":
-    main()
+def main():
+    """main function"""
+    try:
+        cli()
+    except Exception:
+        pass
