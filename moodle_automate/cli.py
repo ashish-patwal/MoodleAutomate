@@ -83,5 +83,10 @@ def main():
     """main function"""
     try:
         cli()
-    except Exception:
-        pass
+    except Exception as err:
+        print(err)
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
