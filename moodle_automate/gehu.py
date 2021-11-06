@@ -2,12 +2,17 @@ import sys
 import requests
 from moodle_automate.parser import cmd_parser
 from moodle_automate.const import URL, MAINURL, config, headers
-from moodle_automate.context import RequestURL, PostToURL, check_config
+from moodle_automate.context import (
+    PostToURL,
+    RequestURL,
+    check_config,
+    FalseCredentialsError,
+)
 from moodle_automate.util import (
-    calender_events,
     list_subjects,
-    submit_attendance,
     declare_motive,
+    calender_events,
+    submit_attendance,
 )
 
 args = cmd_parser()
@@ -30,12 +35,10 @@ def login(cur_session):
 
     with PostToURL(URL, cur_session, headers, config) as response:
         if response.url == URL:
-            print("Wrong Credentials... Exiting...")
-            sys.exit(1)
+            raise FalseCredentialsError
 
-        else:
-            headers.update(cur_session.cookies.get_dict())
-            print("updated cookies for moodle session...")
+        headers.update(cur_session.cookies.get_dict())
+        print("\nupdated cookies for moodle session...")
 
     return cur_session
 
@@ -49,19 +52,23 @@ def main():
         sys.exit(0)
 
     with requests.Session() as session:
-        updated_session = login(session)
+        try:
+            updated_session = login(session)
+        except FalseCredentialsError:
+            print("\nWrong Credentials . Authentication Failed ...")
+            sys.exit(1)
 
-        if args.list_subjects:
-            list_subjects(
-                updated_session, headers, get_sesskey(updated_session), "list_subjects"
-            )
-
-        elif args.download_modules:
+        if args.download_modules:
             list_subjects(
                 updated_session,
                 headers,
                 get_sesskey(updated_session),
                 "download_modules",
+            )
+
+        elif args.list_subjects:
+            list_subjects(
+                updated_session, headers, get_sesskey(updated_session), "list_subjects"
             )
 
         elif args.mark_attendance:

@@ -2,6 +2,8 @@ import os
 import tempfile
 from moodle_automate.headers import get_random_header
 
+# pylint: disable=W1401
+
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 MOODLE_HOME = os.path.join(os.getenv("HOME", tempfile.gettempdir()), ".moodle")
@@ -21,18 +23,16 @@ CLNDRURL = "http://45.116.207.79/moodle/calendar/view.php?view=upcoming"
 
 MARKATTENDANCEURL = "http://45.116.207.79/moodle/mod/attendance/attendance.php"
 
-SUBURL_REG = "^http://45\.116\.207\.79/moodle/course/view\.php\?id=[0-9]*$"
+SUBURL_REG = r"^http://45\.116\.207\.79/moodle/course/view\.php\?id=[0-9]*$"
 SUBURL = "http://45.116.207.79/moodle/course/view.php?id="
 
-VIDEOURL_REG = "^http://45\.116\.207\.79/moodle/mod/url/view\.php\?id=[0-9]*$"
+VIDEOURL_REG = r"^http://45\.116\.207\.79/moodle/mod/url/view\.php\?id=[0-9]*$"
 VIDEOURL = "http://45.116.207.79/moodle/mod/url/view.php?id="
 
-RESOURCEURL_REG = "^http://45\.116\.207\.79/moodle/mod/resource/view\.php\?id=[0-9]*$"
+RESOURCEURL_REG = r"^http://45\.116\.207\.79/moodle/mod/resource/view\.php\?id=[0-9]*$"
 RESOURCEURL = "http://45.116.207.79/moodle/mod/resource/view.php?id="
 
-ATTENDANCEURL_REG = (
-    "^http://45\.116\.207\.79/moodle/mod/attendance/view\.php\?id=[0-9]*$"
-)
+ATTENDANCEURL_REG = r"^http://45\.116\.207\.79/moodle/mod/attendance/view\.php\?id=[0-9]*$"
 ATTENDANCEURL = "http://45.116.207.79/moodle/mod/attendance/view.php?id="
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

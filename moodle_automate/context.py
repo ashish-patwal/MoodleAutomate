@@ -9,6 +9,20 @@ from moodle_automate.const import get_random_header
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+# pylint: disable=W0107
+
+
+class ZeroRegexResultsError(Exception):
+    """Raised when regex returns zero results"""
+
+    pass
+
+
+class FalseCredentialsError(Exception):
+    """Raised when a user inputs wrong login credentials"""
+
+    pass
+
 
 class UserChoiceError(Exception):
     """Raised when choice is in wrong range"""
@@ -24,13 +38,13 @@ class UnplayableStream(Exception):
 class RequestURL:
     """Requests the url and returns the soup."""
 
-    def __init__(self, URL, session=Session(), headers=get_random_header()) -> None:
-        self.URL = URL
+    def __init__(self, url, session=Session(), headers=get_random_header()) -> None:
+        self.url = url
         self.session = session
         self.headers = headers
 
     def __enter__(self) -> "soup":
-        html = self.session.get(self.URL, verify=False, headers=self.headers)
+        html = self.session.get(self.url, verify=False, headers=self.headers)
         soup = BeautifulSoup(html.text, "html5lib")
 
         return soup
@@ -42,18 +56,18 @@ class RequestURL:
 class PostToURL:
     """Post requests to the url and returns the responce."""
 
-    def __init__(self, URL, session, headers, payload) -> None:
-        self.URL = URL
+    def __init__(self, url, session, headers, payload) -> None:
+        self.url = url
         self.session = session
         self.headers = headers
         self.payload = payload
 
     def __enter__(self) -> "resp":
-        self.responce = self.session.post(
-            self.URL, verify=False, headers=self.headers, data=self.payload
+        response = self.session.post(
+            self.url, verify=False, headers=self.headers, data=self.payload
         )
 
-        return self.responce
+        return response
 
     def __exit__(self, exec_type, exec_value, exec_trace) -> None:
         pass
@@ -77,8 +91,8 @@ def check_preference_video(func):
 
     @wraps(func)
     def wrapper(*args, **kwargs):
-        def cmd_exists(x):
-            return shutil.which(x) is not None
+        def cmd_exists(cmd):
+            return shutil.which(cmd) is not None
 
         if (
             not cmd_exists(preference["player"])

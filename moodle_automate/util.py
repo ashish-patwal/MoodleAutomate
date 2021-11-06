@@ -6,21 +6,22 @@ import threading
 from requests import codes
 from tabulate import tabulate
 from urllib.parse import urlparse, parse_qs
+
 from moodle_automate.operations import play_video, download_resource
 from moodle_automate.context import RequestURL, PostToURL, UserChoiceError
 from moodle_automate.downloaders.external_downloader import ExternalDownloader
 from moodle_automate.const import API, courses_api_params, courses_api_payload
 from moodle_automate.const import (
+    MOTIVE,
+    SUBURL,
     payload,
     CLNDRURL,
-    SUBURL,
+    MOTIVE_MSG,
     VIDEOURL_REG,
     RESOURCEURL_REG,
-    ATTENDANCEURL_REG,
     MARKATTENDANCEURL,
-    MOTIVE,
-    MOTIVE_MSG,
     TOGGLE_COMPLETION,
+    ATTENDANCEURL_REG,
     module_completion,
 )
 
@@ -30,9 +31,10 @@ def clear_screen() -> None:
     os.system("clear" if os.name == "posix" else "cls")
 
 
-def date_Time(soup) -> "Data":
+def date_time(soup) -> "Data":
     """Function that returns the data of the events like time
     , date and name of event."""
+    # pylint: disable=E0602
     return (
         "".join(data.get_text().split())
         for data in soup.find("div", {"class": "calendarwrapper"}).find_all(
@@ -43,15 +45,17 @@ def date_Time(soup) -> "Data":
 
 def declare_motive() -> None:
     """Function that declares my motive"""
-    # TODO: Condemm the use of play_video function in operations.py . Get URL with requests .
+    # TODO: Condemm the use of play_video function in operations.py .
+    # TODO: Get URL with requests .
     play_video(MOTIVE)
     print()
     print(MOTIVE_MSG)
     sys.exit(0)
 
 
-def links(soup) -> "links":
+def links(soup) -> "Links":
     """Function that returns the links of events for submitting attendance."""
+    # pylint: disable=E0602
     return (
         data.attrs["href"]
         for data in soup.find("div", {"class": "maincalendar"}).find_all(
@@ -79,7 +83,7 @@ def calender_events(session, headers) -> None:
     with RequestURL(CLNDRURL, session, headers) as soup:
 
         try:
-            for counter, event in enumerate(date_Time(soup), 1):
+            for counter, event in enumerate(date_time(soup), 1):
                 print(event)
                 if counter % 3 == 0:
                     print("-" * 20)
@@ -103,8 +107,8 @@ def mark_attendance(target_url, session, headers) -> None:
             print("-" * 20)
 
         else:
-            for k, v in parse_qs(urlparse(target).query).items():
-                payload_instance[k] = "".join(v)
+            for key, value in parse_qs(urlparse(target).query).items():
+                payload_instance[key] = "".join(value)
 
             with RequestURL(target, session, headers) as soup2:
                 present_value = soup2.find(
@@ -125,12 +129,12 @@ def mark_attendance(target_url, session, headers) -> None:
                     print("-" * 20)
 
 
-def modules_download_range_resolver(str):
+def modules_download_range_resolver(range_list):
     """resolves the input choice given by user
     ex : 1 - 13, 22 , 47
     """
 
-    comma_seperated = [item.strip() for item in str.split(",")]
+    comma_seperated = [item.strip() for item in range_list.split(",")]
     dash_list = []
 
     for item in comma_seperated:
@@ -176,7 +180,13 @@ def list_subjects(session, headers, sesskey, flagkey) -> None:
 
     try:
 
-        choice = int(input("Enter choice : "))
+        choice = input("Enter choice (q to quit): ")
+
+        if choice == "q":
+            return
+
+        choice = int(choice)
+
         if choice not in range(1, len(tab_data) + 1):
             raise UserChoiceError
 
@@ -188,20 +198,22 @@ def list_subjects(session, headers, sesskey, flagkey) -> None:
             flagkey,
         )
 
-    except (UserChoiceError, ValueError):
-        print("Invalid input. Check your choice.")
-
     except IndexError:
-        print("value out of index")
+        print("value out of index. Check your choice...")
+
+    except (UserChoiceError, ValueError):
+        print("Invalid input. Check your choice...")
+
+    list_subjects(session, headers, sesskey, flagkey)
 
 
-def title_string_solver(title) -> "String":
+def title_string_solver(title) -> str:
     """Returns the string after stripping unnecessay data."""
 
     return " ".join(title.split()[:-1]) if len(title.split()) > 1 else title.strip()
 
 
-def type_parser(material) -> "List":
+def type_parser(material) -> list:
     """Returns the list of links paired with their type"""
 
     searcher = re.compile(
@@ -220,16 +232,17 @@ def type_parser(material) -> "List":
 
     for data in material:
         types = searcher.search(data[2])
-        video, attendance, resource = types.groups()
+        if types:
+            video, attendance, resource = types.groups()
 
-        if video:
-            data.append("video")
-        elif attendance:
-            data.append("attendance")
-        elif resource:
-            data.append("resource")
-        else:
-            data.append("None")
+            if video:
+                data.append("video")
+            elif attendance:
+                data.append("attendance")
+            elif resource:
+                data.append("resource")
+            else:
+                data.append("None")
 
     return material
 

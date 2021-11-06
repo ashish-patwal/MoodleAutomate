@@ -3,14 +3,14 @@ import sys
 import urllib3
 import requests
 from urllib.parse import urlparse
-from subprocess import run, Popen, PIPE, CalledProcessError
+from subprocess import run, CalledProcessError
 
 from moodle_automate.const import preference
 from moodle_automate.downloaders.drive_downloader import GoogleDriveDownloader as GDD
 from moodle_automate.context import (
+    UnplayableStream,
     check_preference_video,
     check_preference_download_dir,
-    UnplayableStream,
 )
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -19,7 +19,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 @check_preference_video
 def play_video(url, session=None, headers=None) -> None:
     """Plays the video on media player if it's youtube otherwise on browser."""
-    # TODO: Remove this logic of parsing session and headers for show_motive . Bad Practice .
+    # TODO: Remove this logic of parsing session and headers for show_motive .
     if session and headers:
         responce = session.get(url, verify=False, headers=headers)
     else:

@@ -5,14 +5,15 @@ import argparse
 import inquirer
 from tabulate import tabulate
 from inquirer.themes import GreenPassion
+
+from moodle_automate.util import clear_screen
 from moodle_automate.const import (
+    config,
+    preference,
     MOODLE_HOME,
     MOODLE_CONFIG,
     MOODLE_PREFERENCE,
-    config,
-    preference,
 )
-from moodle_automate.util import clear_screen
 
 
 class Parser(argparse.ArgumentParser):
@@ -108,44 +109,48 @@ def config_setter() -> None:
 
 
 def load_config():
+    """loads the config from config.json"""
     if not os.path.exists(MOODLE_CONFIG):
         return
 
     try:
-        with open(MOODLE_CONFIG, "r") as f:
-            config.update(json.load(f))
+        with open(MOODLE_CONFIG, "r") as config_file:
+            config.update(json.load(config_file))
     except json.JSONDecodeError:
         write_config()
 
 
 def write_config():
+    """writes the config to config.json"""
     if not os.path.exists(MOODLE_HOME):
         os.mkdir(MOODLE_HOME)
 
-    with open(MOODLE_CONFIG, "w") as f:
-        f.write(json.dumps(config))
+    with open(MOODLE_CONFIG, "w") as config_file:
+        config_file.write(json.dumps(config))
 
 
 def load_preference():
+    """loads preferences from preference.json"""
     if not os.path.exists(MOODLE_PREFERENCE):
         return
 
     try:
-        with open(MOODLE_PREFERENCE, "r") as f:
-            preference.update(json.load(f))
+        with open(MOODLE_PREFERENCE, "r") as preference_file:
+            preference.update(json.load(preference_file))
     except json.JSONDecodeError:
         write_preference()
 
 
 def write_preference():
+    """writes the preference to preference.json"""
     if not os.path.exists(MOODLE_HOME):
         os.mkdir(MOODLE_HOME)
 
-    with open(MOODLE_PREFERENCE, "w") as f:
-        f.write(json.dumps(preference))
+    with open(MOODLE_PREFERENCE, "w") as preference_file:
+        preference_file.write(json.dumps(preference))
 
 
-def cmd_parser() -> argparse.Namespace:
+def cmd_parser() -> "args":
     """Parses the command line arguments."""
 
     load_config()

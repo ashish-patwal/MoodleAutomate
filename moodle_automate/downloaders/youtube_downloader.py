@@ -4,6 +4,8 @@ from os.path import exists
 from moodle_automate.downloaders.utility import Utility
 from moodle_automate.const import preference
 
+# pylint: disable=R0903
+
 
 class YoutubeDownloader(Utility):
     """
@@ -18,26 +20,24 @@ class YoutubeDownloader(Utility):
         Downloads a video file from youtube to a given folder.
         """
 
-        #        destination_directory = Utility.destination_exists(dest_path)
-        #        print(destination_directory)
-
-        CMD_ARGS = [
+        cmd_args = [
             "-f",
             f"bestvideo[best[height<={preference['download_video_resolution']}]/height<={preference['download_video_resolution']}]+bestaudio",
         ]
 
         if exists(destination_directory):
-            p = subprocess.Popen(
+            # pylint: disable=R1732
+            video_player_process = subprocess.Popen(
                 [
                     YoutubeDownloader.CMD,
-                    *CMD_ARGS,
+                    *cmd_args,
                     f"{youtube_url}",
                     "-o",
                     f"{destination_directory}/%(title)s.%(ext)s",
                 ],
             )
 
-            stdout = p.communicate()
+            stdout = video_player_process.communicate()
 
             # TODO: Consider alternatives to reduce bottlenecks in stdout buffers (p.communicate())
 
@@ -45,7 +45,7 @@ class YoutubeDownloader(Utility):
             #                sys.stdout.buffer.write(line)
             #                sys.stdout.flush()
 
-            return_code = p.wait()
+            return_code = video_player_process.wait()
 
             if return_code:
                 print("Something went wrong")
