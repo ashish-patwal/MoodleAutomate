@@ -31,14 +31,13 @@ def clear_screen() -> None:
     os.system("clear" if os.name == "posix" else "cls")
 
 
-def date_time(soup) -> "Data":
-    """Function that returns the data of the events like time
-    , date and name of event."""
+def current_events(soup) -> "Data":
+    """Function that returns a list of current events bs4 object"""
     # pylint: disable=E0602
     return (
-        "".join(data.get_text().split())
+        data
         for data in soup.find("div", {"class": "calendarwrapper"}).find_all(
-            "div", class_=re.compile("^row$")
+            "div", class_="description card-body"
         )
     )
 
@@ -67,6 +66,7 @@ def links(soup) -> "Links":
 def submit_attendance(session, headers) -> None:
     """Submits the attendance for every calender event
     if submit attendance link is found."""
+    clear_screen()
     print("Submitting attendance if any in calender")
     print("-" * 20)
     with RequestURL(CLNDRURL, session, headers) as soup:
@@ -78,15 +78,18 @@ def submit_attendance(session, headers) -> None:
 
 def calender_events(session, headers) -> None:
     """Shows the calender events"""
+    clear_screen()
     print("Showing upcoming events")
     print("-" * 20)
     with RequestURL(CLNDRURL, session, headers) as soup:
 
         try:
-            for counter, event in enumerate(date_time(soup), 1):
-                print(event)
-                if counter % 3 == 0:
-                    print("-" * 20)
+            for event in current_events(soup):
+                for row in event.find_all("div", class_=re.compile("^row$")):
+                    print(row.get_text().strip())
+                print("-" * 20)
+                sys.stdout.flush()
+
         except:
             print("No events as of now")
             print("-" * 20)
