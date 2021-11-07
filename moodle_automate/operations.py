@@ -52,30 +52,41 @@ def play_video(url, session=None, headers=None) -> None:
                 params = {"id": file_id, "confirm": token}
                 drive_video = sess.get(GDD.DOWNLOAD_URL, params=params, stream=True)
 
-            run(
-                [
-                    preference["player"],
-                    mpv_args["format"],
-                    mpv_args["subLang"],
-                    mpv_args["window"],
-                    drive_video.url,
-                ],
-                check=True,
-                capture_output=True,
-            )
+            if preference["player"] == "mpv":
+                run(
+                    [
+                        preference["player"],
+                        mpv_args["format"],
+                        mpv_args["subLang"],
+                        mpv_args["window"],
+                        drive_video.url,
+                    ],
+                    check=True,
+                    capture_output=True,
+                )
+
+            elif preference["player"] == "vlc":
+                run(
+                    [preference["player"], drive_video.url],
+                    check=True,
+                    capture_output=True,
+                )
 
         elif urlparse(responce.url).netloc.find("youtube") != -1:
-            run(
-                [
-                    preference["player"],
-                    mpv_args["format"],
-                    mpv_args["subLang"],
-                    mpv_args["window"],
-                    responce.url,
-                ],
-                check=True,
-                capture_output=True,
-            )
+            if preference["player"] == "mpv":
+                run(
+                    [
+                        preference["player"],
+                        mpv_args["format"],
+                        mpv_args["subLang"],
+                        mpv_args["window"],
+                        responce.url,
+                    ],
+                    check=True,
+                    capture_output=True,
+                )
+            elif preference["player"] == "vlc":
+                run([preference["player"], responce.url])
 
         else:
             process = run(
