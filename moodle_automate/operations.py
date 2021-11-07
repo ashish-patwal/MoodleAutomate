@@ -116,22 +116,30 @@ def download_resource(url, session, headers, subject_title) -> None:
         input("[download] {} already exists . Enter to continue .".format(filename))
         return
 
-    with open(filename, "wb") as file:
+    current_download_size = [0]
+    print("[download] Destination: {}".format(filename))
+    sys.stdout.flush()
 
-        if total is None:
-            file.write(responce.content)
+    GDD.save_response_content(responce, filename, True, current_download_size)
 
-        else:
-            downloaded = 0
-            total = int(total)
-            print("Downloading ... ")
-            for data in responce.iter_content(
-                chunk_size=max(int(total / 1000), 1024 * 1024)
-            ):
-                downloaded += len(data)
-                file.write(data)
-                done = int(50 * downloaded / total)
-                sys.stdout.write("\r[{}{}]".format("█" * done, "." * (50 - done)))
-                sys.stdout.flush()
 
-    sys.stdout.write("\n")
+# TODO: cleanup
+#    with open(filename, "wb") as file:
+
+#        if total is None:
+#            file.write(responce.content)
+
+#        else:
+#            downloaded = 0
+#            total = int(total)
+#            print("Downloading ... ")
+#            for data in responce.iter_content(
+#                chunk_size=max(int(total / 1000), 1024 * 1024)
+#            ):
+#                downloaded += len(data)
+#                file.write(data)
+#                done = int(50 * downloaded / total)
+#                sys.stdout.write("\r[{}{}]".format("█" * done, "." * (50 - done)))
+#                sys.stdout.flush()
+
+#    sys.stdout.write("\n")

@@ -54,7 +54,7 @@ class GoogleDriveDownloader(Utility):
                 print()  # Skip to the next line
 
             current_download_size = [0]
-            GoogleDriveDownloader._save_response_content(
+            GoogleDriveDownloader.save_response_content(
                 response, dest_path, showsize, current_download_size
             )
             print()
@@ -92,7 +92,7 @@ class GoogleDriveDownloader(Utility):
         return None
 
     @staticmethod
-    def _save_response_content(response, destination, showsize, current_size):
+    def save_response_content(response, destination, showsize, current_size):
         with open(destination, "wb") as file:
             for chunk in response.iter_content(GoogleDriveDownloader.CHUNK_SIZE):
                 if chunk:  # filter out keep-alive new chunks

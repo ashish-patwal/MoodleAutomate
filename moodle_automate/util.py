@@ -277,7 +277,7 @@ def download_modules(session, headers, range_list, datalist, subject_directory):
                 print("-" * 20)
                 sys.stdout.flush()
 
-    input("press any key to continue")
+    input("Press any key to continue...")
 
 
 def subject_material(
@@ -321,8 +321,6 @@ def subject_material(
 
                 if choice in ("q", "Q"):
                     sys.exit(1)
-                #                else:
-                #                    print()
 
                 if (
                     int(choice) not in range(1, len(datalist) + 1)
@@ -340,6 +338,7 @@ def subject_material(
                     download_resource(
                         baseurl, session, headers, selected_subject_info[1]
                     )
+                    input("Press any key to continue...")
                 elif datalist[int(choice) - 1][3] == "video":
                     play_video(baseurl, session, headers)
                 elif datalist[int(choice) - 1][3] == "attendance":
