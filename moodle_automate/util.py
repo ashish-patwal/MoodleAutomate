@@ -70,15 +70,10 @@ def submit_attendance(session, headers) -> None:
     print("Submitting attendance if any in calender")
     print("-" * 20)
     with RequestURL(CLNDRURL, session, headers) as soup:
-        try:
-            for link in next(links(soup)):
-                threading.Thread(
-                    target=mark_attendance, args=(link, session, headers)
-                ).start()
-
-        except StopIteration:
-            print("No attendance event as of now")
-            print("-" * 20)
+        for link in links(soup):
+            threading.Thread(
+                target=mark_attendance, args=(link, session, headers)
+            ).start()
 
 
 def calender_events(session, headers) -> None:
@@ -87,17 +82,11 @@ def calender_events(session, headers) -> None:
     print("Showing upcoming events")
     print("-" * 20)
     with RequestURL(CLNDRURL, session, headers) as soup:
-
-        try:
-            for event in next(current_events(soup)):
-                for row in event.find_all("div", class_=re.compile("^row$")):
-                    print(row.get_text().strip())
-                print("-" * 20)
-                sys.stdout.flush()
-
-        except StopIteration:
-            print("No events as of now")
+        for event in current_events(soup):
+            for row in event.find_all("div", class_=re.compile("^row$")):
+                print(row.get_text().strip())
             print("-" * 20)
+            sys.stdout.flush()
 
 
 def mark_attendance(target_url, session, headers) -> None:
