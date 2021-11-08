@@ -70,10 +70,15 @@ def submit_attendance(session, headers) -> None:
     print("Submitting attendance if any in calender")
     print("-" * 20)
     with RequestURL(CLNDRURL, session, headers) as soup:
-        for link in links(soup):
-            threading.Thread(
-                target=mark_attendance, args=(link, session, headers)
-            ).start()
+        try:
+            for link in next(links(soup)):
+                threading.Thread(
+                    target=mark_attendance, args=(link, session, headers)
+                ).start()
+
+        except StopIteration:
+            print("No attendance event as of now")
+            print("-" * 20)
 
 
 def calender_events(session, headers) -> None:
@@ -84,13 +89,13 @@ def calender_events(session, headers) -> None:
     with RequestURL(CLNDRURL, session, headers) as soup:
 
         try:
-            for event in current_events(soup):
+            for event in next(current_events(soup)):
                 for row in event.find_all("div", class_=re.compile("^row$")):
                     print(row.get_text().strip())
                 print("-" * 20)
                 sys.stdout.flush()
 
-        except:
+        except StopIteration:
             print("No events as of now")
             print("-" * 20)
 
@@ -183,9 +188,9 @@ def list_subjects(session, headers, sesskey, flagkey) -> None:
 
     try:
 
-        choice = input("Enter choice (q to quit): ")
+        choice = input("Enter choice [ q/Q to quit ]: ")
 
-        if choice == "q":
+        if choice.lower() == "q":
             return
 
         choice = int(choice)
@@ -317,9 +322,9 @@ def subject_material(
         try:
 
             if flagkey == "list_subjects":
-                choice = input("Enter choice ( q to exit ): ")
+                choice = input("Enter choice [ q/Q to quit ] : ")
 
-                if choice in ("q", "Q"):
+                if choice.lower() == "q":
                     sys.exit(1)
 
                 if (
@@ -338,7 +343,6 @@ def subject_material(
                     download_resource(
                         baseurl, session, headers, selected_subject_info[1]
                     )
-                    input("Press any key to continue...")
                 elif datalist[int(choice) - 1][3] == "video":
                     play_video(baseurl, session, headers)
                 elif datalist[int(choice) - 1][3] == "attendance":
@@ -347,9 +351,9 @@ def subject_material(
                     print("Something new just emerged . Contact the dev .")
 
             elif flagkey == "download_modules":
-                range_list = input("Enter modules to download [q to quit]: ")
+                range_list = input("Enter modules to download [ q/Q to quit ]: ")
 
-                if range_list == "q":
+                if range_list.lower() == "q":
                     clear_screen()
                     sys.exit(0)
 
@@ -368,5 +372,6 @@ def subject_material(
         except IndexError:
             print("value out of index")
 
+        input("Press any key to continue...")
         # TODO: Addition of Quit statement and backspace for previous page
         subject_material(session, headers, selected_subject_info, sesskey, flagkey)

@@ -23,7 +23,7 @@ class TestsDecorators(unittest.TestCase):
         config.update(test_config)
 
         res = check_config(self.test_func)
-        self.assertIsInstance(res(), str)
+        self.assertFalse(res())
 
     def test_config_exists(self):
         """tests results if config exists"""
@@ -45,7 +45,7 @@ class TestsDecorators(unittest.TestCase):
             "watch_video_resolution": "720",
         }
         preference.update(test_false_player_preference)
-        self.assertIsInstance(res(), str)
+        self.assertFalse(res())
 
         test_false_browser_preference = {
             "player": "mpv",
@@ -53,7 +53,7 @@ class TestsDecorators(unittest.TestCase):
             "watch_video_resolution": "720",
         }
         preference.update(test_false_browser_preference)
-        self.assertIsInstance(res(), str)
+        self.assertFalse(res())
 
         test_false_resolution_preference = {
             "player": "mpv",
@@ -61,7 +61,7 @@ class TestsDecorators(unittest.TestCase):
             "watch_video_resolution": "999",
         }
         preference.update(test_false_resolution_preference)
-        self.assertIsInstance(res(), str)
+        self.assertFalse(res())
 
     def test_preference_video_exists(self):
         """tests results if preference for video players / browsers / video resolution are correct"""
@@ -78,11 +78,11 @@ class TestsDecorators(unittest.TestCase):
 
         test_empty_path_preference = {"download_dir": None}
         preference.update(test_empty_path_preference)
-        self.assertIsInstance(res(), str)
+        self.assertFalse(res())
 
         test_invalid_path_preference = {"download_dir": "/home/dummy/false_dir/"}
         preference.update(test_invalid_path_preference)
-        self.assertIsInstance(res(), str)
+        self.assertFalse(res())
 
     def test_preference_download_dir_exists(self):
         """tests results if preference for download dir exists and is a valid path"""

@@ -75,8 +75,8 @@ def config_setter() -> None:
                 if os.path.exists(answer["value"]):
                     preference[answer["option"]] = answer["value"]
                     write_preference()
-                else:
-                    response = False
+        #                else:
+        #                    response = False
 
         return response
 

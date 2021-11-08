@@ -80,7 +80,8 @@ def check_config(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         if config["username"] is None or config["password"] is None:
-            return "Please update username / password..."
+            print("Please update username / password...")
+            return False
 
         return func(*args, **kwargs)
 
@@ -98,7 +99,8 @@ def check_preference_video(func):
         if not cmd_exists(preference["player"]) or not cmd_exists(
             preference["browser"]
         ):
-            return "Please update player / browser..."
+            print("Please update player / browser...")
+            return False
 
         if preference["watch_video_resolution"] not in (
             "144",
@@ -115,7 +117,8 @@ def check_preference_video(func):
             "1080",
             "1440",
         ):
-            return "Please use correct resolution 144/ 360/ 480/ 720/ 1080..."
+            print("Please use correct resolution 144/ 360/ 480/ 720/ 1080...")
+            return False
 
         return func(*args, **kwargs)
 
@@ -133,7 +136,8 @@ def check_preference_download_dir(func):
             or not exists(preference["download_dir"])
             or not exists(preference["video_download_dir"])
         ):
-            return "Please update download_dir / video_download_dir location..."
+            print("Please update download_dir / video_download_dir location...")
+            return False
 
         return func(*args, **kwargs)
 
