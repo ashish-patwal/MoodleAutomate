@@ -87,3 +87,15 @@ python -m moodle_automate.cli -a
 *https://user-images.githubusercontent.com/63491234/123659462-5762ad00-d850-11eb-89a7-cdd62828eb82.mp4*
 
 ## Screenshots
+
+![config](https://raw.githubusercontent.com/ashish-patwal/MoodleAutomate/master/Screenshots/config.png)
+![config_download_directory1](https://raw.githubusercontent.com/ashish-patwal/MoodleAutomate/master/Screenshots/config_download_directory.png)
+![config_download_directory2](https://raw.githubusercontent.com/ashish-patwal/MoodleAutomate/master/Screenshots/config_download_directory2.png)
+![download_video_running](https://raw.githubusercontent.com/ashish-patwal/MoodleAutomate/master/Screenshots/download_video_running.png)
+![download_video_completed](https://raw.githubusercontent.com/ashish-patwal/MoodleAutomate/master/Screenshots/download_video_completed.png)
+![subjects](https://raw.githubusercontent.com/ashish-patwal/MoodleAutomate/master/Screenshots/subjects.png)
+![module_resources](https://raw.githubusercontent.com/ashish-patwal/MoodleAutomate/master/Screenshots/module_resources.png)
+![topics](https://raw.githubusercontent.com/ashish-patwal/MoodleAutomate/master/Screenshots/topics.png)
+![events](https://raw.githubusercontent.com/ashish-patwal/MoodleAutomate/master/Screenshots/events.png)
+![no_attendance_availble](https://raw.githubusercontent.com/ashish-patwal/MoodleAutomate/master/Screenshots/no_attendance_available.png)
+![mpvj](https://raw.githubusercontent.com/ashish-patwal/MoodleAutomate/master/Screenshots/mpv.png)
