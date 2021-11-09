@@ -18,13 +18,15 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 @check_preference_video
 def play_video(url, session=None, headers=None) -> None:
-    """Plays the video on media player if it's youtube otherwise on browser."""
+    """Plays the video on media player using mpv / vlc which supports network streaming ."""
     # TODO: Remove this logic of parsing session and headers for show_motive .
     if session and headers:
         responce = session.get(url, verify=False, headers=headers)
     else:
         responce = requests.get(url)
 
+    # mpv arguments that needs to be passes to the mpv program . Not supported on vlc .
+    # mpv > vlc ? i don't know
     mpv_args = {
         "shuffle": "-shuffle",
         "format": f"--ytdl-format=bestvideo[height<=?{preference['watch_video_resolution']}][fps<=?30]+bestaudio/best[height<={preference['watch_video_resolution']}]",
@@ -34,6 +36,7 @@ def play_video(url, session=None, headers=None) -> None:
 
     try:
 
+        # If the video link is a google drive link
         if urlparse(responce.url).netloc.find("drive.google.com") != -1:
             sess = requests.Session()
 
@@ -72,6 +75,7 @@ def play_video(url, session=None, headers=None) -> None:
                     capture_output=True,
                 )
 
+        # If the video link is a youtube link
         elif urlparse(responce.url).netloc.find("youtube") != -1:
             if preference["player"] == "mpv":
                 run(
@@ -106,7 +110,7 @@ def play_video(url, session=None, headers=None) -> None:
 
 @check_preference_download_dir
 def download_resource(url, session, headers, subject_title) -> None:
-    """Downloads the file resource and saves it in current directory."""
+    """Downloads the file resource and saves it in the correct directory."""
 
     if not os.path.exists(preference["download_dir"]):
         os.mkdir(preference["download_dir"])

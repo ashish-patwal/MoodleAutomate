@@ -17,7 +17,7 @@ from moodle_automate.const import (
 
 
 class Parser(argparse.ArgumentParser):
-    """Extend functionality of ArgumentParser"""
+    """Extend functionality of ArgumentParser to show help on every argsparse error"""
 
     def error(self, message):
         sys.stderr.write("error: %s\n\n" % message)
@@ -153,9 +153,12 @@ def write_preference():
 def cmd_parser() -> "args":
     """Parses the command line arguments."""
 
+    # Loads the config and preference from config.json and preference.json
+    # and updates the config and preference object in const.py
     load_config()
     load_preference()
 
+    # Initialize the parser
     parser = Parser(description="Automates Moodle platform")
     group = parser.add_mutually_exclusive_group()
 
@@ -204,10 +207,12 @@ def cmd_parser() -> "args":
 
     args = parser.parse_args(sys.argv[1:])
 
+    # If no flag is specified
     if len(sys.argv) == 1:
         parser.print_help()
         sys.exit(1)
 
+    # --config / -c
     if args.config:
         config_setter()
         sys.exit(0)

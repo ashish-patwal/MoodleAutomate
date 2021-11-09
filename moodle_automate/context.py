@@ -36,6 +36,7 @@ class UnplayableStream(Exception):
     pass
 
 
+# Context Manager classes for requesting and posting requests
 class RequestURL:
     """Requests the url and returns the soup."""
 

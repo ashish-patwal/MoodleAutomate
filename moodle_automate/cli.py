@@ -17,6 +17,7 @@ from moodle_automate.util import (
     submit_attendance,
 )
 
+# Parses the flag options given to program and passes them as an instance to args
 args = cmd_parser()
 
 
@@ -37,6 +38,8 @@ def login(cur_session):
 
     with PostToURL(URL, cur_session, headers, config) as response:
         if response.url == URL:
+            """Since on failed authentication page redirects to the login page we get status[200] in place of authentication failed status code .
+            Therefore need to compare redirected URLS to check if we were authenticated against the platform or not"""
             raise FalseCredentialsError
 
         headers.update(cur_session.cookies.get_dict())
@@ -49,7 +52,9 @@ def login(cur_session):
 def cli():
     """cli function"""
 
+    # --motive / -m
     if args.show_motive:
+        # Something funny cooking here
         declare_motive()
         sys.exit(0)
 
@@ -60,6 +65,7 @@ def cli():
             print("\nWrong Credentials . Authentication Failed ...")
             sys.exit(1)
 
+        # --download / -d
         if args.download_modules:
             list_subjects(
                 updated_session,
@@ -68,14 +74,17 @@ def cli():
                 "download_modules",
             )
 
+        # --subjects / -s
         elif args.list_subjects:
             list_subjects(
                 updated_session, headers, get_sesskey(updated_session), "list_subjects"
             )
 
+        # --attendance / -a
         elif args.mark_attendance:
             submit_attendance(updated_session, headers)
 
+        # --events / -e
         elif args.show_events:
             calender_events(updated_session, headers)
 
