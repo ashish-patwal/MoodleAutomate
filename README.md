@@ -84,7 +84,7 @@ python -m moodle_automate.cli -a
 
 ## Demo
 
-![Demo](https://raw.githubusercontent.com/ashish-patwal/MoodleAutomate/master/Screenshots/moodle_automate_demo.mp4)
+*https://user-images.githubusercontent.com/63491234/140880423-19885a0c-5f23-46f3-a996-b592a4d11cab.mp4*
 
 ## Screenshots
 
