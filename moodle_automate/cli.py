@@ -9,6 +9,7 @@ from moodle_automate.context import (
     check_config,
     FalseCredentialsError,
 )
+
 from moodle_automate.util import (
     list_subjects,
     declare_motive,

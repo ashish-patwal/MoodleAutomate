@@ -9,30 +9,78 @@ Directly download any resources available on the online platform without opening
 
 _With all due regards this is only a spaghetti code, feel free to add any features you want and modify it . Just give due credits and do mention the original source code so other people can also fork from this ._
 
+## Installation :
+
+1. Clone the repository
+
+```bash
+git clone https://github.com/ashish-patwal/MoodleAutomate.git
+```
+
+2. Cd into the repository
+
+```bash
+cd MoodleAutomate/
+```
+
+3. Install required modules with requirements.txt
+
+```bash
+pip install -r requirements.txt
+```
+
 ## Prerequisite :
 
-Python library needed :
-tabulate
-bs4
-html5lib
+_*Python library needed :*_<br>
 
-**install these libraries using the command given below**
-
-- python -r requirements.txt
+- bs4
+- urllib3
+- html5lib
+- inquirer
+- tabulate
+- soupsieve
 
 ## BASIC USAGE :
 
-python gehu.py -h ---> Displays help options
+**Make sure your are in _root_ MoodleAutomate folder ( Not moodle_automate )**
 
-python gehu.py -c / python gehu.py --config --> saves config and other preference
+_All the flags ( -h, -c, -s, -a, -e, -d) are mutually exclusive < you can only use one flag at a time not together >_
 
-python gehu.py -e / python gehu.py --events ---> Displays upcoming events in calender
+- Display Help
 
-python gehu.py -a / python gehu.py --attendance --> Takes attendance if there is any in upcoming events. Works only when there is a submit button present
+```bash
+python -m moodle_automate.cli -h
+```
 
-python gehu.py -s / python gehu.py --subjects ---> Displays subjects
+- Set up Config
 
-python gehu.py -m / python gehu.py --motive ---> Unveils my motive
+```bash
+python -m moodle_automate.cli -c
+```
+
+- List subjects to watch video lectures and download resources
+
+```bash
+python -m moodle_automate.cli -s
+```
+
+- Download video lectures and resources ( pdf, pptx etc )
+
+```bash
+python -m moodle_automate.cli -d
+```
+
+- Show upcoming events if available
+
+```bash
+python -m mooodle_automate.cli -e
+```
+
+- Take attendance if available
+
+```bash
+python -m moodle_automate.cli -a
+```
 
 ## Demo
 
