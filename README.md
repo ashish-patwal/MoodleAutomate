@@ -1,6 +1,6 @@
 # MOODLE AUTOMATE
 
-## A CLI Python program to automate and minimize ease of moodle platform studying
+## A CLI Python program to automate and maximize ease of moodle platform studying
 
 A CLI tool that helps you to take classes online in the minimalistic way possible .
 
