@@ -7,7 +7,7 @@ A CLI tool that helps you to take classes online in the minimalistic way possibl
 Watch online videos directly streaming to your local media player , take attendance and watch upcoming events without the use of your browser .
 Directly download any resources available on the online platform without opening your browser .
 
-_With all due regards this is only a spaghetti code, feel free to add any features you want and modify it . Just give due credits and do mention the original source code so other people can also fork from this ._
+Also see [Proxy Buddy](https://github.com/ashish-patwal/proxybuddy) -> A python program deployed on REPL 24/7 which takes attendance on your behalf and sends notifications to whatsapp through twilio api .
 
 ## Installation :
 
@@ -81,10 +81,13 @@ python -m mooodle_automate.cli -e
 ```bash
 python -m moodle_automate.cli -a
 ```
+<br><br>
 
-## Demo
+# Demo Video 
 
 *https://user-images.githubusercontent.com/63491234/140880423-19885a0c-5f23-46f3-a996-b592a4d11cab.mp4*
+
+<br><br>
 
 ## Screenshots
 
