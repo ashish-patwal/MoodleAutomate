@@ -1,4 +1,4 @@
-# MOODLE AUTOMATE
+# 《 MOODLE AUTOMATE 》
 
 ## A CLI Python program to automate and maximize ease of moodle platform studying
 
