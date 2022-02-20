@@ -1,4 +1,4 @@
-# 《 MOODLE AUTOMATE 》
+# <u>MOODLE AUTOMATE</u>
 
 ## A CLI Python program to automate and maximize ease of moodle platform studying
 
@@ -81,9 +81,10 @@ python -m mooodle_automate.cli -e
 ```bash
 python -m moodle_automate.cli -a
 ```
+
 <br><br>
 
-# Demo Video 
+# Demo Video
 
 *https://user-images.githubusercontent.com/63491234/140880423-19885a0c-5f23-46f3-a996-b592a4d11cab.mp4*
 

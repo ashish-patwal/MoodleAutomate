@@ -141,7 +141,8 @@ def modules_download_range_resolver(range_list):
                 if int(tmp[0]) <= int(tmp[1]):
                     dash_list.extend(list(range(int(tmp[0]), int(tmp[1]) + 1)))
                 else:
-                    dash_list.extend(list(range(int(tmp[0]), int(tmp[1]) - 1, -1)))
+                    dash_list.extend(
+                        list(range(int(tmp[0]), int(tmp[1]) - 1, -1)))
         else:
             dash_list.append(int(item))
 
@@ -340,7 +341,8 @@ def subject_material(
                     print("Something new just emerged . Contact the dev .")
 
             elif flagkey == "download_modules":
-                range_list = input("Enter modules to download [ q/Q to quit ]: ")
+                range_list = input(
+                    "Enter modules to download [ q/Q to quit ]: ")
 
                 if range_list.lower() == "q":
                     clear_screen()
@@ -363,4 +365,5 @@ def subject_material(
 
         input("Press any key to continue...")
         # TODO: Addition of Quit statement and backspace for previous page
-        subject_material(session, headers, selected_subject_info, sesskey, flagkey)
+        subject_material(session, headers,
+                         selected_subject_info, sesskey, flagkey)
